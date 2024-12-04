@@ -58,8 +58,8 @@ importers:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.6.3)
       vue-fn:
-        specifier: 0.0.3-aplha.32
-        version: 0.0.3-aplha.32(@vue/reactivity@3.5.13)(vue@3.5.13(typescript@5.6.3))
+        specifier: 0.0.3-aplha.33
+        version: 0.0.3-aplha.33(@vue/reactivity@3.5.13)(vue@3.5.13(typescript@5.6.3))
       vue-router:
         specifier: ^4.5.0
         version: 4.5.0(vue@3.5.13(typescript@5.6.3))
@@ -1961,8 +1961,8 @@ packages:
   vue-component-type-helpers@2.1.10:
     resolution: {integrity: sha512-lfgdSLQKrUmADiSV6PbBvYgQ33KF3Ztv6gP85MfGaGaSGMTXORVaHT1EHfsqCgzRNBstPKYDmvAV9Do5CmJ07A==}
 
-  vue-fn@0.0.3-aplha.32:
-    resolution: {integrity: sha512-Qc8MoaUijNBDeXBWErhc++ihVMSbxjkx5ekcdewaCFzSoFIMPHNH5H9E0MmMLR9SwfkFDnsWLfrWohaN41p3YA==}
+  vue-fn@0.0.3-aplha.33:
+    resolution: {integrity: sha512-tJUD8RuycA2N+kT0m17r+YJmilY9ljB8tExyuPnSgeEO/zCAXOakWIfoHJEAN6FTQfCzqA94AmyShhn6xkDmzg==}
     peerDependencies:
       '@vue/reactivity': '>=3.5.0'
       vue: '>=3.5.0'
@@ -4013,7 +4013,7 @@ snapshots:
 
   vue-component-type-helpers@2.1.10: {}
 
-  vue-fn@0.0.3-aplha.32(@vue/reactivity@3.5.13)(vue@3.5.13(typescript@5.6.3)):
+  vue-fn@0.0.3-aplha.33(@vue/reactivity@3.5.13)(vue@3.5.13(typescript@5.6.3)):
     dependencies:
       '@vue/reactivity': 3.5.13
       nanoid: 5.0.9

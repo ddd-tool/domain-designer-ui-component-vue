@@ -13,7 +13,7 @@ export function* nomnomlCodeGenerator(
     for (const j in agg._attributes.fields) {
       const field = agg._attributes.fields[j]
       fieldsCode.push(
-        `|${field._attributes.name}${
+        `|- ${field._attributes.name}${
           field._attributes.type === 'Unknown'
             ? ''
             : `:${field._attributes.type}`
@@ -30,7 +30,7 @@ export function* nomnomlCodeGenerator(
     for (const j in command._attributes.fields) {
       const field = command._attributes.fields[j]
       fieldsCode.push(
-        `|${field._attributes.name}${
+        `|- ${field._attributes.name}${
           field._attributes.type === 'Unknown'
             ? ''
             : `:${field._attributes.type}`
@@ -47,7 +47,7 @@ export function* nomnomlCodeGenerator(
     for (const j in event._attributes.fields) {
       const field = event._attributes.fields[j]
       fieldsCode.push(
-        `|${field._attributes.name}${
+        `|- ${field._attributes.name}${
           field._attributes.type === 'Unknown'
             ? ''
             : `:${field._attributes.type}`
@@ -80,7 +80,7 @@ export function* nomnomlCodeGenerator(
     for (const j in facadeCommand._attributes.fields) {
       const field = facadeCommand._attributes.fields[j]
       fieldsCode.push(
-        `|${field._attributes.name}${
+        `|- ${field._attributes.name}${
           field._attributes.type === 'Unknown'
             ? ''
             : `:${field._attributes.type}`

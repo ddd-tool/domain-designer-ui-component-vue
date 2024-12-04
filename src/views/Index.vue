@@ -7,25 +7,49 @@ const design = computed(() => {
   const d = createDomainDesigner()
   // 用户
   const 用户 = d.person('用户')
-  // 命令
-  const 命令1 = d.command('命令1', {})
-  const 命令2 = d.facadeCmd('命令2', {})
-  // 聚合
-  const 主键 = d.field.id('主键')
-  const 时间 = d.field.time('时间')
-  const 聚合 = d.agg('聚合', { 主键, 时间 })
-  // 事件
-  const 事件 = d.event('事件', {})
-  // 规则
-  const 规则 = d.policy('规则')
-  // 服务
-  const 服务 = d.service('服务')
-  // 外部系统
-  const 外部系统 = d.system('外部系统')
 
-  用户.command(命令1).agg(聚合).event(事件).policy(规则).service(服务)
-  事件.system(外部系统, '我是外部系统')
-  用户.facadeCmd(命令2).service(服务)
+  // 聚合
+  const 用户账号 = d.field('用户账号')
+  const 订单号 = d.field.id('订单号')
+  const 下单时间 = d.field.time('下单时间')
+  const 订单聚合 = d.agg('订单聚合', { 订单号, 下单时间, 用户账号 })
+
+  // 命令
+  const 创建订单 = d.command('创建订单', {
+    订单号: 订单聚合.inner['订单号'],
+    用户账号,
+  })
+  const 自动扣款 = d.command('自动扣款', { 订单号 })
+
+  // 事件
+  const 下单成功 = d.event('下单成功', { 订单号, 下单时间 })
+  const 下单失败 = d.event('下单失败', { 订单号, 下单时间 })
+  const 扣款成功 = d.event('扣款成功', { 订单号, 下单时间 })
+  const 扣款失败 = d.event('扣款失败', { 订单号, 下单时间 })
+  // 规则
+  const 付款规则 = d.policy('付款规则')
+  // 服务
+  const 自动扣款服务 = d.service('自动扣款服务')
+  // 外部系统
+  const 物流系统 = d.system('物流系统')
+  const 邮件系统 = d.system('邮件系统')
+
+  // 下单成功自动扣款流程
+  用户.command(创建订单)
+    .agg(订单聚合)
+    .event(下单成功)
+    .policy(付款规则)
+    .service(自动扣款服务)
+    .command(自动扣款)
+    .agg(订单聚合)
+    .event(扣款成功)
+    .system(物流系统)
+  // 下单成功自动扣款流程
+  自动扣款.agg(订单聚合).event(扣款失败).system(邮件系统)
+  // 下单失败流程
+  用户.command(创建订单).agg(订单聚合).event(下单失败)
+  // 手动扣款流程
+  用户.command(创建订单).agg(订单聚合).event(下单成功).policy(付款规则)
   return d
 })
 </script>
