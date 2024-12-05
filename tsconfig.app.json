@@ -5,7 +5,6 @@
     "lib/*",
     "lib/**/*",
     "src/**/*",
-    "src/**/*.vue"
   ],
   "exclude": [
     "src/**/__tests__/*"

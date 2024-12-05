@@ -1,16 +1,12 @@
 import { computed, ref } from 'vue'
-import { createMultiInstanceAgg } from 'vue-fn/domain'
-import { createDomainDesigner } from 'vue-fn/domain-design'
+import { createBroadcastEvent, createSingletonAgg } from 'vue-fn/domain'
+import type { DomainDesigner } from '@ddd-tool/domain-designer-core'
 import { nomnomlCodeGenerator } from './gen-code'
-import style1 from './style1'
 
-const aggMap: Record<string, ReturnType<typeof createAgg>> = {}
+let agg: ReturnType<typeof createAgg>
 
-function createAgg(id: string, data: ReturnType<typeof createDomainDesigner>) {
-  return createMultiInstanceAgg(id, (context) => {
-    context.onScopeDispose(() => {
-      delete aggMap[id]
-    })
+function createAgg(data: DomainDesigner) {
+  return createSingletonAgg((context) => {
     const design = ref(data)
     const code = computed(() => {
       const code: string[] = []
@@ -23,28 +19,36 @@ function createAgg(id: string, data: ReturnType<typeof createDomainDesigner>) {
       design.value._getContext
       return code.join('\n')
     })
+    const flows = computed(() => {
+      return design.value._getContext().getFlows()
+    })
+    const currentFlow = ref(null as string | null)
+    const onFocusFlow = createBroadcastEvent({ key: '' as string | null })
 
     return {
       states: {
-        code: computed(() => {
-          return style1 + code.value
-        }),
+        code,
+        flows,
+        currentFlow,
       },
-      commands: {},
-      events: {},
+      commands: {
+        focusFlow: (key: string | null) => {
+          console.log('focusFlow', key)
+          currentFlow.value = key
+          onFocusFlow.publish({ key })
+        },
+      },
+      events: { onFocusFlow },
     }
   })
 }
 
-export function useDiagramAgg(
-  id: string,
-  data?: ReturnType<typeof createDomainDesigner>
-) {
-  if (!aggMap[id]) {
+export function useDiagramAgg(data?: DomainDesigner) {
+  if (!agg) {
     if (!data) {
-      throw new Error('data is required')
+      throw new Error('need data')
     }
-    aggMap[id] = createAgg(id, data)
+    agg = createAgg(data)
   }
-  return aggMap[id].api
+  return agg.api
 }

@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@ddd-tool/domain-designer-core':
+        specifier: 0.0.0-alpha.1
+        version: 0.0.0-alpha.1
       nomnoml:
         specifier: ^1.6.3
         version: 1.6.3
@@ -222,6 +225,9 @@ packages:
 
   '@cypress/xvfb@1.2.4':
     resolution: {integrity: sha512-skbBzPggOVYCbnGgV+0dmBdW/s77ZkAOXIC1knS8NagwDjBrNC1LuXtQJeiN6l+m7lzmHtaoUw/ctJKdqkG57Q==}
+
+  '@ddd-tool/domain-designer-core@0.0.0-alpha.1':
+    resolution: {integrity: sha512-SfmFeMSyOaMZ1TNl/9nL6Ocpz1P3Hb7VooXzG1r7jSWq6GvJceu0+cqVI+Kr/HY/9KGY1TKrNxoiQY0aP87iGA==}
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -2298,6 +2304,10 @@ snapshots:
       lodash.once: 4.1.1
     transitivePeerDependencies:
       - supports-color
+
+  '@ddd-tool/domain-designer-core@0.0.0-alpha.1':
+    dependencies:
+      nanoid: 5.0.9
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true

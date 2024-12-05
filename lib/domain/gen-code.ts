@@ -1,13 +1,11 @@
-import {
-  type DomainDesignAgg,
-  type DomainDesignDesc,
-  type DomainDesignFields,
-  createDomainDesigner,
-} from 'vue-fn/domain-design'
+import type {
+  DomainDesignAgg,
+  DomainDesignDesc,
+  DomainDesignFields,
+  DomainDesigner,
+} from '@ddd-tool/domain-designer-core'
 
-export function* nomnomlCodeGenerator(
-  design: ReturnType<typeof createDomainDesigner>
-) {
+export function* nomnomlCodeGenerator(design: DomainDesigner) {
   const context = design._getContext()
   for (const i in context.getAggs()) {
     const agg: DomainDesignAgg<any> = context.getAggs()[i]

@@ -14,6 +14,7 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "@ddd-tool/domain-designer-core": "0.0.0-alpha.1",
     "nomnoml": "^1.6.3"
   },
   "devDependencies": {
