@@ -6,13 +6,17 @@ import { createDomainDesigner } from 'vue-fn/domain-design'
 const design = computed(() => {
   const d = createDomainDesigner()
   // 用户
-  const 用户 = d.person('用户')
+  const 用户 = d.person('用户', '前端用户')
 
   // 聚合
   const 用户账号 = d.field('用户账号')
   const 订单号 = d.field.id('订单号')
   const 下单时间 = d.field.time('下单时间')
-  const 订单聚合 = d.agg('订单聚合', { 订单号, 下单时间, 用户账号 })
+  const 订单聚合 = d.agg(
+    '订单聚合',
+    { 订单号, 下单时间, 用户账号 },
+    '这是订单聚合'
+  )
 
   // 命令
   const 创建订单 = d.command('创建订单', {
@@ -27,9 +31,18 @@ const design = computed(() => {
   const 扣款成功 = d.event('扣款成功', { 订单号, 下单时间 })
   const 扣款失败 = d.event('扣款失败', { 订单号, 下单时间 })
   // 规则
-  const 付款规则 = d.policy('付款规则')
+  const 付款规则 = d.policy(
+    '付款规则',
+    d.desc`
+  如果${用户账号}开通了自动扣费服务，则发起自动扣款
+  规则1：
+  规则2：
+  规则3：
+  ... ...
+    `
+  )
   // 服务
-  const 自动扣款服务 = d.service('自动扣款服务')
+  const 自动扣款服务 = d.service('自动扣款服务', '根据付款规则发起自动扣款')
   // 外部系统
   const 物流系统 = d.system('物流系统')
   const 邮件系统 = d.system('邮件系统')

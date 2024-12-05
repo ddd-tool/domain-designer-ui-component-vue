@@ -32,7 +32,7 @@
     "vite-plugin-vue-devtools": "^7.6.7",
     "vitest": "^2.1.6",
     "vue": "^3.5.13",
-    "vue-fn": "0.0.3-aplha.33",
+    "vue-fn": "0.0.3-aplha.35",
     "vue-router": "^4.5.0",
     "vue-tsc": "^2.1.10"
   },
