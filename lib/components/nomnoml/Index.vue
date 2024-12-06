@@ -10,21 +10,6 @@ const source = diagramAgg.states.code
 const svgCode = ref('')
 watchEffect(() => {
   svgCode.value = nomnoml.renderSvg(style + source.value)
-  // nextTick(() => {
-  //   const dom = document.querySelector('svg')
-  //   dom!.onclick = function (e: MouseEvent) {
-  //     const tar = e.target as SVGSVGElement | undefined
-  //     if (!tar) {
-  //       return
-  //     }
-  //     const attributes: Record<string, any> =
-  //       tar?.closest?.('g[data-name]')?.attributes || {}
-  //     if (!attributes['data-name']) {
-  //       return
-  //     }
-  //     console.log(attributes['data-name'])
-  //   }
-  // })
 })
 diagramAgg.events.onFocusFlow.watchPublish(({ data }) => {
   const items = data.key === null ? [] : diagramAgg.states.flows.value[data.key]
@@ -36,12 +21,15 @@ diagramAgg.events.onFocusFlow.watchPublish(({ data }) => {
     if (!dataName) {
       continue
     } else if (items.length === 0) {
+      dom.style.transition = 'opacity 0.5s'
       dom.style.opacity = '1'
       continue
     }
     if (items.includes(dataName)) {
+      dom.style.transition = 'opacity 0.5s'
       dom.style.opacity = '1'
     } else if (dataName) {
+      dom.style.transition = 'opacity 0.5s'
       dom.style.opacity = '0.5'
     }
   }

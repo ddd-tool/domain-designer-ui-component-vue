@@ -22,6 +22,14 @@ const flows = diagramAgg.states.flows
 <template>
   <div class="flows">
     <button
+      @click="diagramAgg.commands.focusFlow(null)"
+      :class="`focus-all-btn ${
+        diagramAgg.states.currentFlow.value === null ? 'focus' : ''
+      }`"
+    >
+      【聚焦整体】
+    </button>
+    <button
       v-for="(_, key) in flows"
       :key="key"
       @click="diagramAgg.commands.focusFlow(key)"
@@ -30,14 +38,6 @@ const flows = diagramAgg.states.flows
       }`"
     >
       {{ key }}
-    </button>
-    <button
-      @click="diagramAgg.commands.focusFlow(null)"
-      :class="`focus-all-btn ${
-        diagramAgg.states.currentFlow.value === null ? 'focus' : ''
-      }`"
-    >
-      【聚焦整体】
     </button>
   </div>
   <Nomnoml :source="sourceCode" />
@@ -58,9 +58,13 @@ const flows = diagramAgg.states.flows
 }
 button {
   border: none;
+  background-color: #eee;
+}
+button:hover {
+  background-color: #fff;
 }
 .focus {
-  background-color: lightblue;
+  background-color: lightblue !important;
 }
 .focus-all-btn {
   font-weight: bold;
