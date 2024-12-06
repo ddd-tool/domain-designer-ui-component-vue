@@ -2,6 +2,6 @@
 
 ## 试试效果
 
-[在线演示地址](https://stackblitz.com/~/github.com/ddd-tool/vue-domain-ui?file=src/views/Index.vue)
+<a href="https://stackblitz.com/~/github.com/ddd-tool/vue-domain-ui?file=src/views/design.ts" target="_blank">在线演示地址</a>
 
 - 推荐安装 Vue 插件
