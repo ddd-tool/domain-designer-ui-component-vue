@@ -11,14 +11,20 @@ const svgCode = ref('')
 watchEffect(() => {
   svgCode.value = nomnoml.renderSvg(style + source.value)
 })
-function startWorkflowAnimation(nodes: readonly string[]) {
+let currentAnimationTask = 0
+function startWorkflowAnimation(
+  animationTask: number,
+  nodes: readonly string[]
+) {
   let t = 0
   for (const node of nodes) {
     const el = document.querySelector(`[data-name="${node}"]`) as SVGGElement
     setTimeout(() => {
+      if (animationTask !== currentAnimationTask) return
       el.style.transition = `opacity 0s`
       el.style.opacity = '0.0'
       setTimeout(() => {
+        if (animationTask !== currentAnimationTask) return
         el.style.transition = `opacity 0.5s`
         el.style.opacity = '1'
       }, 100)
@@ -49,7 +55,7 @@ diagramAgg.events.onFocusFlow.watchPublish(({ data }) => {
     map[dataName] = true
   }
   setTimeout(() => {
-    startWorkflowAnimation(items)
+    startWorkflowAnimation(++currentAnimationTask, items)
   })
 })
 </script>
