@@ -46,17 +46,18 @@ function createAgg(data: DomainDesigner) {
       return result
     })
 
+    // ======================== 聚焦流程 ========================
     const onFocusFlow = createBroadcastEvent({
       userStory: '' as string,
       workflow: '' as string | null,
     })
+
     function focusFlow(workflow: null): void
     function focusFlow(workflow: string, userStory: string): void
     function focusFlow(
       workflow: string | null,
       userStory: string = '【其他流程】'
     ) {
-      console.log('userStory: ', userStory, ', workflow: ', workflow)
       currentWorkflow.value = workflow
       currentStory.value = userStory
       onFocusFlow.publish({ userStory, workflow })

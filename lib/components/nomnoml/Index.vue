@@ -11,29 +11,46 @@ const svgCode = ref('')
 watchEffect(() => {
   svgCode.value = nomnoml.renderSvg(style + source.value)
 })
+function startWorkflowAnimation(nodes: readonly string[]) {
+  let t = 0
+  for (const node of nodes) {
+    const el = document.querySelector(`[data-name="${node}"]`) as SVGGElement
+    setTimeout(() => {
+      el.style.transition = `opacity 0s`
+      el.style.opacity = '0.0'
+      setTimeout(() => {
+        el.style.transition = `opacity 0.5s`
+        el.style.opacity = '1'
+      }, 100)
+    }, t)
+    t += 500
+  }
+}
 diagramAgg.events.onFocusFlow.watchPublish(({ data }) => {
   const items: readonly string[] =
     data.workflow === null ? [] : diagramAgg.states.workflows[data.workflow]
-  console.log('触发')
+  const map: Record<string, boolean> = {}
 
   const doms = document.querySelectorAll('g')
+  if (items.length === 0) {
+    for (const dom of doms) {
+      dom.style.transition = 'opacity 0s'
+      dom.style.opacity = '1'
+    }
+    return
+  }
   for (const dom of doms) {
     const dataName = dom.dataset.name
-    if (!dataName) {
-      continue
-    } else if (items.length === 0) {
-      dom.style.transition = 'opacity 0.5s'
-      dom.style.opacity = '1'
+    if (!dataName || map[dataName]) {
       continue
     }
-    if (items.includes(dataName)) {
-      dom.style.transition = 'opacity 0.5s'
-      dom.style.opacity = '1'
-    } else if (dataName) {
-      dom.style.transition = 'opacity 0.5s'
-      dom.style.opacity = '0.5'
-    }
+    dom.style.transition = 'opacity 0s'
+    dom.style.opacity = '0.1'
+    map[dataName] = true
   }
+  setTimeout(() => {
+    startWorkflowAnimation(items)
+  })
 })
 </script>
 

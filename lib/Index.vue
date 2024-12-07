@@ -2,7 +2,6 @@
 import Nomnoml from '#lib/components/nomnoml/Index.vue'
 import { useDiagramAgg } from '#domain/diagram-agg'
 import Drawer from 'primevue/drawer'
-import SpeedDial from 'primevue/speeddial'
 import Tabs from 'primevue/tabs'
 import Tab from 'primevue/tab'
 import TabList from 'primevue/tablist'
@@ -10,6 +9,7 @@ import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import Button from 'primevue/button'
 import RadioButton from 'primevue/radiobutton'
+import Dock from 'primevue/dock'
 import { ref, watch } from 'vue'
 
 const props = defineProps({
@@ -19,7 +19,18 @@ const props = defineProps({
   },
 })
 
-const btnItems = ref([
+const dockItems = ref([
+  {
+    label: '播放',
+    icon: 'pi pi-play-circle',
+    command() {
+      if (currentWorkflow.value === null) {
+        diagramAgg.commands.focusFlow(currentWorkflow.value)
+      } else {
+        diagramAgg.commands.focusFlow(currentWorkflow.value, currentStory.value)
+      }
+    },
+  },
   {
     label: '用户故事',
     icon: 'pi pi-users',
@@ -47,12 +58,17 @@ function handleNoFocus() {
 </script>
 
 <template>
-  <SpeedDial
-    v-show="!drawerVisible"
-    :model="btnItems"
-    direction="left"
-    style="position: fixed; top: calc(50% - 2rem); right: 0"
-  />
+  <Dock :model="dockItems" position="right" style="position: fixed">
+    <template #itemicon="{ item }">
+      <Button
+        v-tooltip.top="item.label"
+        :icon="item.icon"
+        :src="item.icon"
+        @click="(e: Event) => item.command!(e as any)"
+        style="width: 100%"
+      ></Button>
+    </template>
+  </Dock>
   <Drawer
     v-model:visible="drawerVisible"
     position="right"
