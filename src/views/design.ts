@@ -74,7 +74,7 @@ const 创建订单失败流程 = d.startWorkflow('创建订单失败')
 d.startWorkflow('未归纳流程')
 用户.command(创建订单).agg(订单聚合).event(下单失败).system(邮件系统)
 
-d.setUserStory('前端用户下单并付款', [
+d.setUserStory('作为商城用户，我要下单并且实现自动扣款，以便购得心仪得商品', [
   创建订单失败流程,
   创建订单成功_自动扣款失败流程,
   创建订单成功_自动扣款成功流程,
