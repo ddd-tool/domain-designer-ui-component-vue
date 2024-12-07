@@ -39,11 +39,11 @@ export function* nomnomlCodeGenerator<T extends DomainDesigner>(design: T) {
       service._attributes.name
     } ${descriptionToCode(service._attributes.description)}]`
   }
-  for (const i in context.getPersons()) {
-    const person = context.getPersons()[i]
-    yield `[<actor id=${person._attributes.__code}> ${
-      person._attributes.name
-    } ${descriptionToCode(person._attributes.description)}]`
+  for (const i in context.getActors()) {
+    const actor = context.getActors()[i]
+    yield `[<actor id=${actor._attributes.__code}> ${
+      actor._attributes.name
+    } ${descriptionToCode(actor._attributes.description)}]`
   }
   for (const i in context.getSystems()) {
     const system = context.getSystems()[i]

@@ -3,7 +3,7 @@ import { createDomainDesigner } from '@ddd-tool/domain-designer-core'
 const d = createDomainDesigner()
 
 // 用户
-const 用户 = d.person('用户', '前端用户')
+const 用户 = d.actor('用户', '前端用户')
 
 // 聚合
 const 用户账号 = d.info.field('用户账号')
@@ -74,10 +74,13 @@ const 创建订单失败流程 = d.startWorkflow('创建订单失败')
 d.startWorkflow('未归纳流程')
 用户.command(创建订单).agg(订单聚合).event(下单失败).system(邮件系统)
 
-d.setUserStory('作为商城用户，我要下单并且实现自动扣款，以便购得心仪得商品', [
-  创建订单失败流程,
-  创建订单成功_自动扣款失败流程,
-  创建订单成功_自动扣款成功流程,
-])
+d.defineUserStory(
+  '作为商城用户，我要下单并且实现自动扣款，以便购得心仪得商品',
+  [
+    创建订单失败流程,
+    创建订单成功_自动扣款失败流程,
+    创建订单成功_自动扣款成功流程,
+  ]
+)
 
 export default d
