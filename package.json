@@ -14,8 +14,11 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
-    "@ddd-tool/domain-designer-core": "0.0.0-alpha.2",
-    "nomnoml": "^1.6.3"
+    "@ddd-tool/domain-designer-core": "0.0.0-alpha.3",
+    "@primevue/themes": "^4.2.4",
+    "nomnoml": "^1.6.3",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.2.4"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",

@@ -12,7 +12,8 @@ watchEffect(() => {
   svgCode.value = nomnoml.renderSvg(style + source.value)
 })
 diagramAgg.events.onFocusFlow.watchPublish(({ data }) => {
-  const items = data.key === null ? [] : diagramAgg.states.flows.value[data.key]
+  const items: readonly string[] =
+    data.workflow === null ? [] : diagramAgg.states.workflows[data.workflow]
   console.log('触发')
 
   const doms = document.querySelectorAll('g')
