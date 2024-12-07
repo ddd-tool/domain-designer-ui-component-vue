@@ -10,7 +10,7 @@ import TabPanel from 'primevue/tabpanel'
 import Button from 'primevue/button'
 import RadioButton from 'primevue/radiobutton'
 import Dock from 'primevue/dock'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const props = defineProps({
   design: {
@@ -19,10 +19,16 @@ const props = defineProps({
   },
 })
 
+const drawerVisible = ref(false)
+const diagramAgg = useDiagramAgg(props.design as any)
+const sourceCode = diagramAgg.states.code
+const currentStory = ref('【其他流程】')
+const currentWorkflow = ref<null | string>(null)
 const dockItems = ref([
   {
     label: '播放',
     icon: 'pi pi-play-circle',
+    disabled: computed(() => diagramAgg.states.currentWorkflow.value === null),
     command() {
       if (currentWorkflow.value === null) {
         diagramAgg.commands.focusFlow(currentWorkflow.value)
@@ -39,11 +45,6 @@ const dockItems = ref([
     },
   },
 ])
-const drawerVisible = ref(false)
-const diagramAgg = useDiagramAgg(props.design as any)
-const sourceCode = diagramAgg.states.code
-const currentStory = ref('【其他流程】')
-const currentWorkflow = ref<null | string>(null)
 watch([currentStory, currentWorkflow], ([story, workflow]) => {
   if (workflow === null) {
     diagramAgg.commands.focusFlow(null)
@@ -62,6 +63,7 @@ function handleNoFocus() {
     <template #itemicon="{ item }">
       <Button
         v-tooltip.top="item.label"
+        :disabled="item.disabled as boolean"
         :icon="item.icon"
         :src="item.icon"
         @click="(e: Event) => item.command!(e as any)"
