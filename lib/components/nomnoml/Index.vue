@@ -5,11 +5,10 @@ import style from './style'
 import { useDiagramAgg } from '#lib/domain/diagram-agg'
 
 const diagramAgg = useDiagramAgg()
-const source = diagramAgg.states.code
 
 const svgCode = ref('')
 watchEffect(() => {
-  svgCode.value = nomnoml.renderSvg(style + source.value)
+  svgCode.value = nomnoml.renderSvg(style + diagramAgg.states.code.value)
 })
 let currentAnimationTask = 0
 function startWorkflowAnimation(

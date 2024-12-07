@@ -62,7 +62,7 @@ function handleNoFocus() {
   <Dock :model="dockItems" position="right" style="position: fixed">
     <template #itemicon="{ item }">
       <Button
-        v-tooltip.top="item.label"
+        v-tooltip.left="item.label"
         :disabled="item.disabled as boolean"
         :icon="item.icon"
         :src="item.icon"

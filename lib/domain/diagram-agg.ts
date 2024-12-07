@@ -23,10 +23,6 @@ function createAgg(data: DomainDesigner) {
       design.value._getContext
       return code.join('\n')
     })
-    // const flows = computed(() => {
-    //   return design.value._getContext().getWorkflows()
-    // })
-    // const currentFlow = ref(null as string | null)
     const currentStory = ref('【其他流程】')
     const currentWorkflow = ref<null | string>(null)
     const workflows = reactive(design.value._getContext().getWorkflows())
