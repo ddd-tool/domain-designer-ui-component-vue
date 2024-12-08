@@ -9,9 +9,12 @@ const 用户 = d.actor('用户', '下单用户')
 const 用户账号 = d.info.field('用户账号')
 const 订单号 = d.info.field.id('订单号')
 const 下单时间 = d.info.field.time('下单时间')
+const 商品价格 = d.info.field.num('商品价格')
+const 商品数量 = d.info.field.num('商品数量')
+const 订单金额 = d.info.func('订单金额', [商品价格, 商品数量])
 const 订单聚合 = d.agg(
   '订单聚合',
-  { 订单号, 下单时间, 用户账号 },
+  { 订单号, 下单时间, 用户账号, 商品价格, 商品数量, 订单金额 },
   '这是订单聚合'
 )
 

@@ -38,7 +38,7 @@ const currentStory = ref('【其他流程】')
 const currentWorkflow = ref<null | string>(null)
 const dockItems = ref([
   {
-    label: '播放',
+    label: '播放选定流程',
     icon: 'pi pi-play-circle',
     disabled: computed(() => diagramAgg.states.currentWorkflow.value === null),
     command() {
@@ -60,7 +60,6 @@ const dockItems = ref([
   {
     label: '设置',
     icon: 'pi pi-cog',
-
     command() {
       drawerType.value = 'Settings'
       drawerVisible.value = true
