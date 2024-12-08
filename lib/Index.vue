@@ -9,6 +9,7 @@ import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import Button from 'primevue/button'
 import RadioButton from 'primevue/radiobutton'
+import ToggleSwitch from 'primevue/toggleswitch'
 import Dock from 'primevue/dock'
 import { computed, ref, watch } from 'vue'
 
@@ -19,8 +20,19 @@ const props = defineProps({
   },
 })
 
-const drawerVisible = ref(false)
 const diagramAgg = useDiagramAgg(props.design as any)
+
+const drawerVisible = ref(false)
+const drawerType = ref<'UserStories' | 'Settings' | undefined>(undefined)
+const displayReadModel = ref(diagramAgg.states.displayReadModel.value)
+watch(displayReadModel, (v) => {
+  diagramAgg.commands.setDisplayReadModel(v)
+})
+const displaySystem = ref(diagramAgg.states.displayReadModel.value)
+watch(displaySystem, (v) => {
+  diagramAgg.commands.setDisplaySystem(v)
+})
+
 const sourceCode = diagramAgg.states.code
 const currentStory = ref('【其他流程】')
 const currentWorkflow = ref<null | string>(null)
@@ -41,6 +53,16 @@ const dockItems = ref([
     label: '聚焦用户故事',
     icon: 'pi pi-users',
     command() {
+      drawerType.value = 'UserStories'
+      drawerVisible.value = true
+    },
+  },
+  {
+    label: '设置',
+    icon: 'pi pi-cog',
+
+    command() {
+      drawerType.value = 'Settings'
       drawerVisible.value = true
     },
   },
@@ -82,6 +104,7 @@ function handleNoFocus() {
   </Dock>
   <Drawer
     v-model:visible="drawerVisible"
+    v-if="drawerType === 'UserStories'"
     position="right"
     header="聚焦用户故事"
     style="width: 40%"
@@ -114,6 +137,30 @@ function handleNoFocus() {
         </TabPanel>
       </TabPanels>
     </Tabs>
+  </Drawer>
+  <Drawer
+    v-model:visible="drawerVisible"
+    v-if="drawerType === 'Settings'"
+    position="right"
+    header="设置"
+    style="width: 40%"
+  >
+    <div>
+      <ToggleSwitch
+        v-model="displayReadModel"
+        :true-value="true"
+        :false-value="false"
+      />
+      <label> 渲染读模型 </label>
+    </div>
+    <div>
+      <ToggleSwitch
+        v-model="displaySystem"
+        :true-value="true"
+        :false-value="false"
+      />
+      <label> 渲染外部系统 </label>
+    </div>
   </Drawer>
   <Nomnoml :source="sourceCode" />
 </template>

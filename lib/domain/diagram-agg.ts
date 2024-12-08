@@ -11,16 +11,23 @@ interface FocusFlowFn {
 
 function createAgg(data: DomainDesigner) {
   return createSingletonAgg(() => {
+    // ======================== 生成代码 ========================
     const design = ref(data)
+    const displayReadModel = ref(true)
+    const displaySystem = ref(true)
     const code = computed(() => {
+      console.debug('generate code')
       const code: string[] = []
-      const generator = nomnomlCodeGenerator(design.value)
+      const generator = nomnomlCodeGenerator(
+        design.value,
+        displayReadModel.value,
+        displaySystem.value
+      )
       let item = generator.next()
       while (!item.done) {
         code.push(item.value)
         item = generator.next()
       }
-      design.value._getContext
       return code.join('\n')
     })
     const currentStory = ref('【其他流程】')
@@ -46,6 +53,8 @@ function createAgg(data: DomainDesigner) {
     const onFocusFlow = createBroadcastEvent({
       userStory: '' as string,
       workflow: '' as string | null,
+      displayReadModel,
+      displaySystem,
     })
 
     function focusFlow(workflow: null): void
@@ -56,7 +65,12 @@ function createAgg(data: DomainDesigner) {
     ) {
       currentWorkflow.value = workflow
       currentStory.value = userStory
-      onFocusFlow.publish({ userStory, workflow })
+      onFocusFlow.publish({
+        userStory,
+        workflow,
+        displayReadModel: displayReadModel.value,
+        displaySystem: displaySystem.value,
+      })
     }
 
     // ======================== 下载功能 ========================
@@ -71,6 +85,8 @@ function createAgg(data: DomainDesigner) {
         currentWorkflow,
         currentStory,
         downloadEnabled,
+        displayReadModel,
+        displaySystem,
       },
       commands: {
         focusFlow: focusFlow as FocusFlowFn,
@@ -79,6 +95,15 @@ function createAgg(data: DomainDesigner) {
         },
         setDownloadEnabled(b: boolean) {
           downloadEnabled.value = b
+        },
+        setDisplayReadModel(b: boolean) {
+          displayReadModel.value = b
+        },
+        setDisplaySystem(b: boolean) {
+          displaySystem.value = b
+        },
+        getIdMap() {
+          return design.value._getContext().getIdMap()
         },
       },
       events: { onFocusFlow, onDownloadSvg },

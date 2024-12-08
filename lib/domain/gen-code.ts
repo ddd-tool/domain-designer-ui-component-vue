@@ -7,7 +7,11 @@ import type {
 } from '@ddd-tool/domain-designer-core'
 import { isDomainDesignInfoFunc } from '@ddd-tool/domain-designer-core'
 
-export function* nomnomlCodeGenerator<T extends DomainDesigner>(design: T) {
+export function* nomnomlCodeGenerator<T extends DomainDesigner>(
+  design: T,
+  displayReadModel: boolean,
+  displaySystem: boolean
+) {
   const context = design._getContext()
   for (const i in context.getAggs()) {
     const agg: DomainDesignAgg<any> = context.getAggs()[i]
@@ -45,12 +49,6 @@ export function* nomnomlCodeGenerator<T extends DomainDesigner>(design: T) {
       actor._attributes.name
     } ${descriptionToCode(actor._attributes.description)}]`
   }
-  for (const i in context.getSystems()) {
-    const system = context.getSystems()[i]
-    yield `[<system id=${system._attributes.__code}> ${
-      system._attributes.name
-    } ${descriptionToCode(system._attributes.description)}]`
-  }
   for (const i in context.getPolicies()) {
     const policy = context.getPolicies()[i]
     yield `[<policy id=${policy._attributes.__code}> ${
@@ -65,17 +63,36 @@ export function* nomnomlCodeGenerator<T extends DomainDesigner>(design: T) {
       facadeCommand._attributes.description
     )}]`
   }
-  for (const i in context.getReadModels()) {
-    const readModel = context.getReadModels()[i]
-    yield `[<readModel id=${readModel._attributes.__code}> ${
-      readModel._attributes.name
-    } ${fieldsToCode(readModel._attributes.infos)} ${descriptionToCode(
-      readModel._attributes.description
-    )}]`
+  if (displayReadModel) {
+    for (const i in context.getReadModels()) {
+      const readModel = context.getReadModels()[i]
+      yield `[<readModel id=${readModel._attributes.__code}> ${
+        readModel._attributes.name
+      } ${fieldsToCode(readModel._attributes.infos)} ${descriptionToCode(
+        readModel._attributes.description
+      )}]`
+    }
+  }
+  if (displaySystem) {
+    for (const i in context.getSystems()) {
+      const system = context.getSystems()[i]
+      yield `[<system id=${system._attributes.__code}> ${
+        system._attributes.name
+      } ${descriptionToCode(system._attributes.description)}]`
+    }
   }
   for (const i in context.getLinks()) {
     const linkType = context.getLinks()[i]
     const [_rule1, from, _rule2, to] = i.split(',')
+    if (
+      !displayReadModel &&
+      (_rule1 === 'ReadModel' || _rule2 === 'ReadModel')
+    ) {
+      continue
+    }
+    if (!displaySystem && (_rule1 === 'System' || _rule2 === 'System')) {
+      continue
+    }
     if (linkType === 'Association') {
       yield `[${from}] -> [${to}]`
     } else if (linkType === 'Aggregation') {

@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import nomnoml from 'nomnoml'
-import { ref, watchEffect } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import style from './style'
 import { useDiagramAgg } from '#lib/domain/diagram-agg'
 
 const diagramAgg = useDiagramAgg()
 
-const svgCode = ref('')
-watchEffect(() => {
-  svgCode.value = nomnoml.renderSvg(style + diagramAgg.states.code.value)
+const svgCode = computed(() => {
+  return nomnoml.renderSvg(style + diagramAgg.states.code.value)
 })
 
 // ============================ 聚焦流程/播放动画 ============================
@@ -40,8 +39,29 @@ function startWorkflowAnimation(
   }
 }
 diagramAgg.events.onFocusFlow.watchPublish(({ data }) => {
-  const items: readonly string[] =
+  const idMap = diagramAgg.commands.getIdMap() as Record<
+    string,
+    {
+      _attributes: {
+        __code: string
+        rule: string
+      }
+    }
+  >
+  let items: readonly string[] =
     data.workflow === null ? [] : diagramAgg.states.workflows[data.workflow]
+  items = items.filter((i) => {
+    let b = true
+    if (!data.displayReadModel && idMap[i]._attributes.rule === 'ReadModel') {
+      b = false
+    } else if (!data.displaySystem && idMap[i]._attributes.rule === 'System') {
+      b = false
+    }
+    return b
+  })
+  if (!data.displayReadModel || !data.displaySystem) {
+    items = removeAdjacentDuplicates(items)
+  }
   const map: Record<string, boolean> = {}
 
   const doms = document.querySelectorAll('g')
@@ -65,6 +85,19 @@ diagramAgg.events.onFocusFlow.watchPublish(({ data }) => {
     startWorkflowAnimation(++currentAnimationTask, items)
   })
 })
+function removeAdjacentDuplicates(arr: readonly string[]): string[] {
+  if (arr.length === 0) return [] // 如果数组为空，直接返回空数组
+
+  const result: string[] = [arr[0]] // 初始化结果数组，包含第一个元素
+
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i] !== arr[i - 1]) {
+      // 如果当前元素和前一个元素不同
+      result.push(arr[i]) // 将当前元素加入结果数组
+    }
+  }
+  return result
+}
 
 // ============================ 下载 ============================
 diagramAgg.events.onDownloadSvg.watchPublish(() => {

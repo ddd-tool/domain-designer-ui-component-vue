@@ -48,7 +48,8 @@ const 邮件系统 = d.system('邮件系统')
 const 订单详情 = d.readModel('订单详情读模型', { 订单号, 下单时间 })
 
 const 创建订单失败流程 = d.startWorkflow('创建订单失败')
-用户.command(创建订单).agg(订单聚合).event(下单失败).system(邮件系统)
+用户.command(创建订单).agg(订单聚合).event(下单失败)
+下单失败.system(邮件系统)
 
 const 创建订单成功_自动扣款失败流程 =
   d.startWorkflow('创建订单成功，自动扣款失败')
@@ -60,8 +61,8 @@ const 创建订单成功_自动扣款失败流程 =
   .command(自动扣款)
   .agg(订单聚合)
   .event(扣款失败)
-扣款失败.system(邮件系统)
 扣款失败.readModel(订单详情)
+扣款失败.system(邮件系统)
 
 const 创建订单成功_自动扣款成功流程 =
   d.startWorkflow('创建订单成功，自动扣款成功')
@@ -77,7 +78,8 @@ const 创建订单成功_自动扣款成功流程 =
 扣款成功.system(物流系统)
 
 d.startWorkflow('未归纳流程')
-用户.command(创建订单).agg(订单聚合).event(下单失败).system(邮件系统)
+用户.command(创建订单).agg(订单聚合).event(下单失败)
+下单失败.system(邮件系统)
 
 d.startWorkflow('读模型')
 const 用户读 = d.actor('用户', '用户(读模型)')
