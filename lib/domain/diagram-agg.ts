@@ -59,6 +59,10 @@ function createAgg(data: DomainDesigner) {
       onFocusFlow.publish({ userStory, workflow })
     }
 
+    // ======================== 下载功能 ========================
+    const downloadEnabled = ref(true)
+    const onDownloadSvg = createBroadcastEvent({})
+
     return {
       states: {
         code,
@@ -66,11 +70,18 @@ function createAgg(data: DomainDesigner) {
         workflows,
         currentWorkflow,
         currentStory,
+        downloadEnabled,
       },
       commands: {
         focusFlow: focusFlow as FocusFlowFn,
+        downloadSvg() {
+          onDownloadSvg.publish({})
+        },
+        setDownloadEnabled(b: boolean) {
+          downloadEnabled.value = b
+        },
       },
-      events: { onFocusFlow },
+      events: { onFocusFlow, onDownloadSvg },
     }
   })
 }

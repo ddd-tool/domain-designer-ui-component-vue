@@ -10,14 +10,19 @@ const svgCode = ref('')
 watchEffect(() => {
   svgCode.value = nomnoml.renderSvg(style + diagramAgg.states.code.value)
 })
+
+// ============================ 聚焦流程/播放动画 ============================
 let currentAnimationTask = 0
 function startWorkflowAnimation(
   animationTask: number,
   nodes: readonly string[]
 ) {
+  diagramAgg.commands.setDownloadEnabled(false)
   let t = 0
-  for (const node of nodes) {
-    const el = document.querySelector(`[data-name="${node}"]`) as SVGGElement
+  for (let i = 0; i < nodes.length; i++) {
+    const el = document.querySelector(
+      `[data-name="${nodes[i]}"]`
+    ) as SVGGElement
     setTimeout(() => {
       if (animationTask !== currentAnimationTask) return
       el.style.transition = `opacity 0s`
@@ -26,6 +31,9 @@ function startWorkflowAnimation(
         if (animationTask !== currentAnimationTask) return
         el.style.transition = `opacity 0.5s`
         el.style.opacity = '1'
+        if (i === nodes.length - 1) {
+          diagramAgg.commands.setDownloadEnabled(true)
+        }
       }, 100)
     }, t)
     t += 500
@@ -56,6 +64,19 @@ diagramAgg.events.onFocusFlow.watchPublish(({ data }) => {
   setTimeout(() => {
     startWorkflowAnimation(++currentAnimationTask, items)
   })
+})
+
+// ============================ 下载 ============================
+diagramAgg.events.onDownloadSvg.watchPublish(() => {
+  const el = document.querySelector('svg') as SVGSVGElement
+  const svg = new XMLSerializer().serializeToString(el)
+  const svgBlob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' })
+  const svgUrl = URL.createObjectURL(svgBlob)
+  const tempLink = document.createElement('a')
+  tempLink.href = svgUrl
+  tempLink.setAttribute('download', 'diagram.svg')
+  tempLink.click()
+  URL.revokeObjectURL(svgUrl)
 })
 </script>
 

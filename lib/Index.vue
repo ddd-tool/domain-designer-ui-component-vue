@@ -38,10 +38,18 @@ const dockItems = ref([
     },
   },
   {
-    label: '用户故事',
+    label: '聚焦用户故事',
     icon: 'pi pi-users',
     command() {
       drawerVisible.value = true
+    },
+  },
+  {
+    label: '导出当前视图',
+    icon: 'pi pi-file-export',
+    disabled: computed(() => !diagramAgg.states.downloadEnabled.value),
+    command() {
+      diagramAgg.commands.downloadSvg()
     },
   },
 ])
@@ -63,7 +71,8 @@ function handleNoFocus() {
     <template #itemicon="{ item }">
       <Button
         v-tooltip.left="item.label"
-        :disabled="item.disabled as boolean"
+        :disabled="(item.disabled as boolean)"
+        :severity="item.disabled ? 'secondary' : 'info'"
         :icon="item.icon"
         :src="item.icon"
         @click="(e: Event) => item.command!(e as any)"
@@ -74,7 +83,7 @@ function handleNoFocus() {
   <Drawer
     v-model:visible="drawerVisible"
     position="right"
-    header="用户故事"
+    header="聚焦用户故事"
     style="width: 40%"
   >
     <Button label="无焦点" severity="info" @click="handleNoFocus"></Button>
