@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@ddd-tool/domain-designer-core':
-        specifier: 0.0.0-alpha.4
-        version: 0.0.0-alpha.4
+        specifier: 0.0.0-alpha.6
+        version: 0.0.0-alpha.6
       '@primevue/themes':
         specifier: ^4.2.4
         version: 4.2.4
@@ -106,8 +106,8 @@ packages:
   '@cypress/xvfb@1.2.4':
     resolution: {integrity: sha512-skbBzPggOVYCbnGgV+0dmBdW/s77ZkAOXIC1knS8NagwDjBrNC1LuXtQJeiN6l+m7lzmHtaoUw/ctJKdqkG57Q==}
 
-  '@ddd-tool/domain-designer-core@0.0.0-alpha.4':
-    resolution: {integrity: sha512-tmqSfJgTjLRZuXBw23PfriTpBaQSQIC5qN5TYYjR8eEhHAUSkkz2B3b+U9MRmJKZChOiVJL9UDq5S3PUxW4u7A==}
+  '@ddd-tool/domain-designer-core@0.0.0-alpha.6':
+    resolution: {integrity: sha512-F+V201pz9SNnIcX/2FvSoX7124Qwtd3QFu7gilFsr4Rdx36rKC5IrZPsan3c+aSeoM6usmpxj8g3TYPIjx6Aog==}
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -1731,7 +1731,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ddd-tool/domain-designer-core@0.0.0-alpha.4':
+  '@ddd-tool/domain-designer-core@0.0.0-alpha.6':
     dependencies:
       nanoid: 5.0.9
 

@@ -65,9 +65,24 @@ export function* nomnomlCodeGenerator<T extends DomainDesigner>(design: T) {
       facadeCommand._attributes.description
     )}]`
   }
-  for (const i in context.getArrows()) {
-    const [from, to] = i.split(',')
-    yield `[${from}] -> [${to}]`
+  for (const i in context.getReadModels()) {
+    const readModel = context.getReadModels()[i]
+    yield `[<readModel id=${readModel._attributes.__code}> ${
+      readModel._attributes.name
+    } ${fieldsToCode(readModel._attributes.infos)} ${descriptionToCode(
+      readModel._attributes.description
+    )}]`
+  }
+  for (const i in context.getLinks()) {
+    const linkType = context.getLinks()[i]
+    const [_rule1, from, _rule2, to] = i.split(',')
+    if (linkType === 'Association') {
+      yield `[${from}] -> [${to}]`
+    } else if (linkType === 'Aggregation') {
+      yield `[${to}] o- [${from}]`
+    } else if (linkType === 'Dependency') {
+      yield `[${from}] --> [${to}]`
+    }
   }
 }
 

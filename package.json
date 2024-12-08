@@ -15,7 +15,7 @@
     "verify": "tsc --noEmit"
   },
   "dependencies": {
-    "@ddd-tool/domain-designer-core": "0.0.0-alpha.4",
+    "@ddd-tool/domain-designer-core": "0.0.0-alpha.6",
     "@primevue/themes": "^4.2.4",
     "nomnoml": "^1.6.3",
     "primeicons": "^7.0.0",
