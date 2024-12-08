@@ -11,5 +11,8 @@ export default `
 // #padding: 8
 // #spacing: 20
 // #edgeMargin: 0
+// #ranker: network-simplex
+// #ranker: tight-tree
+// #ranker: longest-path
 
 `
