@@ -104,7 +104,7 @@ export function* nomnomlCodeGenerator<T extends DomainDesigner>(
 }
 
 function fieldsToCode<
-  T extends Record<string, DomainDesignInfo<DomainDesignInfoType>>
+  T extends Record<string, DomainDesignInfo<DomainDesignInfoType, string>>
 >(infos: T): string {
   if (!infos) {
     return ''

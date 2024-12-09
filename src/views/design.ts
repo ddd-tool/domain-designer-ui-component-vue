@@ -6,7 +6,7 @@ const d = createDomainDesigner()
 const 用户 = d.actor('用户', '下单用户')
 
 // 聚合
-const 用户账号 = d.info.field('用户账号')
+const 用户账号 = d.info.field.any('用户账号')
 const 订单号 = d.info.field.id('订单号')
 const 下单时间 = d.info.field.time('下单时间')
 const 商品价格 = d.info.field.num('商品价格')
@@ -14,22 +14,19 @@ const 商品数量 = d.info.field.num('商品数量')
 const 订单金额 = d.info.func('订单金额', [商品价格, 商品数量])
 const 订单聚合 = d.agg(
   '订单聚合',
-  { 订单号, 下单时间, 用户账号, 商品价格, 商品数量, 订单金额 },
+  [订单号, 下单时间, 用户账号, 商品价格, 商品数量, 订单金额],
   '这是订单聚合'
 )
 
 // 命令
-const 创建订单 = d.command('创建订单', {
-  订单号: 订单聚合.inner['订单号'],
-  用户账号,
-})
-const 自动扣款 = d.command('自动扣款', { 订单号 })
+const 创建订单 = d.command('创建订单', [订单聚合.inner.订单号, 用户账号])
+const 自动扣款 = d.command('自动扣款', [订单号])
 
 // 事件
-const 下单成功 = d.event('下单成功', { 订单号, 下单时间 })
-const 下单失败 = d.event('下单失败', { 订单号, 下单时间 })
-const 扣款成功 = d.event('扣款成功', { 订单号, 下单时间 })
-const 扣款失败 = d.event('扣款失败', { 订单号, 下单时间 })
+const 下单成功 = d.event('下单成功', [订单号, 下单时间])
+const 下单失败 = d.event('下单失败', [订单号, 下单时间])
+const 扣款成功 = d.event('扣款成功', [订单号, 下单时间])
+const 扣款失败 = d.event('扣款失败', [订单号, 下单时间])
 // 规则
 const 付款规则 = d.policy(
   '付款规则',
@@ -48,7 +45,7 @@ const 物流系统 = d.system('物流系统')
 const 邮件系统 = d.system('邮件系统')
 
 // 读模型
-const 订单详情 = d.readModel('订单详情读模型', { 订单号, 下单时间 })
+const 订单详情 = d.readModel('订单详情读模型', [订单号, 下单时间])
 
 const 创建订单失败流程 = d.startWorkflow('创建订单失败')
 用户.command(创建订单).agg(订单聚合).event(下单失败)
