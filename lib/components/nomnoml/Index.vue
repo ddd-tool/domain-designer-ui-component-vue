@@ -10,7 +10,7 @@ const svgCode = computed(() => {
   return nomnoml.renderSvg(style + diagramAgg.states.code.value)
 })
 
-// ============================ 聚焦流程/播放动画 ============================
+// ======================= focusOnWorkFlow/playWorkflow =======================
 let currentAnimationTask = 0
 function startWorkflowAnimation(
   animationTask: number,
@@ -86,14 +86,11 @@ diagramAgg.events.onFocusFlow.watchPublish(({ data }) => {
   })
 })
 function removeAdjacentDuplicates(arr: readonly string[]): string[] {
-  if (arr.length === 0) return [] // 如果数组为空，直接返回空数组
-
-  const result: string[] = [arr[0]] // 初始化结果数组，包含第一个元素
-
+  if (arr.length === 0) return []
+  const result: string[] = [arr[0]]
   for (let i = 1; i < arr.length; i++) {
     if (arr[i] !== arr[i - 1]) {
-      // 如果当前元素和前一个元素不同
-      result.push(arr[i]) // 将当前元素加入结果数组
+      result.push(arr[i])
     }
   }
   return result
