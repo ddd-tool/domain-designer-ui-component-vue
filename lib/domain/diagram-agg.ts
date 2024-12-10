@@ -30,7 +30,7 @@ function createAgg(data: DomainDesigner) {
       }
       return code.join('\n')
     })
-    const currentStory = ref('【其他流程】')
+    const currentStory = ref('Others')
     const currentWorkflow = ref<null | string>(null)
     const workflows = reactive(design.value._getContext().getWorkflows())
     const userStories = computed(() => {
@@ -45,7 +45,7 @@ function createAgg(data: DomainDesigner) {
         }
         result[story] = values
       }
-      result['【其他流程】'] = workflowsTmp
+      result['Others'] = workflowsTmp
       return result
     })
 
@@ -59,10 +59,7 @@ function createAgg(data: DomainDesigner) {
 
     function focusFlow(workflow: null): void
     function focusFlow(workflow: string, userStory: string): void
-    function focusFlow(
-      workflow: string | null,
-      userStory: string = '【其他流程】'
-    ) {
+    function focusFlow(workflow: string | null, userStory: string = 'Others') {
       currentWorkflow.value = workflow
       currentStory.value = userStory
       onFocusFlow.publish({

@@ -2,16 +2,20 @@
 import Nomnoml from '#lib/components/nomnoml/Index.vue'
 import { useDiagramAgg } from '#domain/diagram-agg'
 import Drawer from 'primevue/drawer'
+import Select from 'primevue/select'
 import Tabs from 'primevue/tabs'
-import Tab from 'primevue/tab'
-import TabList from 'primevue/tablist'
+// import Tab from 'primevue/tab'
+// import TabList from 'primevue/tablist'
 import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import Button from 'primevue/button'
 import RadioButton from 'primevue/radiobutton'
 import ToggleSwitch from 'primevue/toggleswitch'
+import SelectButton from 'primevue/selectbutton'
+import Divider from 'primevue/divider'
 import Dock from 'primevue/dock'
 import { computed, ref, watch } from 'vue'
+import { useI18nAgg } from './domain/i18n-agg'
 
 const props = defineProps({
   design: {
@@ -20,8 +24,13 @@ const props = defineProps({
   },
 })
 
+const i18nAgg = useI18nAgg()
+const t = i18nAgg.commands.$t
 const diagramAgg = useDiagramAgg(props.design as any)
 
+const sourceCode = diagramAgg.states.code
+
+// =========================== Settings ===========================
 const drawerVisible = ref(false)
 const drawerType = ref<'UserStories' | 'Settings' | undefined>(undefined)
 const displayReadModel = ref(diagramAgg.states.displayReadModel.value)
@@ -32,13 +41,30 @@ const displaySystem = ref(diagramAgg.states.displayReadModel.value)
 watch(displaySystem, (v) => {
   diagramAgg.commands.setDisplaySystem(v)
 })
+const language = ref(i18nAgg.states.currentLanguage.value)
+const languageOptions = ref([
+  { label: 'English', value: 'en-US' },
+  { label: '简体中文', value: 'zh-CN' },
+])
+watch(language, (v) => {
+  i18nAgg.commands.setLanguage(v)
+})
 
-const sourceCode = diagramAgg.states.code
-const currentStory = ref('【其他流程】')
+// =========================== User Stories ===========================
+const currentStory = ref('Others')
 const currentWorkflow = ref<null | string>(null)
+const userStoriesOptions = computed(() => {
+  const result: { name: string; code: string }[] = []
+  for (const story in diagramAgg.states.userStories.value) {
+    result.push({ name: story, code: story })
+  }
+  return result
+})
+
+// =========================== Dock ===========================
 const dockItems = ref([
   {
-    label: '播放选定流程',
+    label: t('menu.replayWorkflow'),
     icon: 'pi pi-play-circle',
     disabled: computed(() => diagramAgg.states.currentWorkflow.value === null),
     command() {
@@ -50,7 +76,7 @@ const dockItems = ref([
     },
   },
   {
-    label: '聚焦用户故事',
+    label: t('menu.focusOnUserStory'),
     icon: 'pi pi-users',
     command() {
       drawerType.value = 'UserStories'
@@ -58,7 +84,7 @@ const dockItems = ref([
     },
   },
   {
-    label: '设置',
+    label: t('menu.settings'),
     icon: 'pi pi-cog',
     command() {
       drawerType.value = 'Settings'
@@ -66,7 +92,7 @@ const dockItems = ref([
     },
   },
   {
-    label: '导出当前视图',
+    label: t('menu.exportSvg'),
     icon: 'pi pi-file-export',
     disabled: computed(() => !diagramAgg.states.downloadEnabled.value),
     command() {
@@ -82,7 +108,7 @@ watch([currentStory, currentWorkflow], ([story, workflow]) => {
   diagramAgg.commands.focusFlow(workflow, story)
 })
 function handleNoFocus() {
-  currentStory.value = '【其他流程】'
+  currentStory.value = 'Others'
   currentWorkflow.value = null
 }
 </script>
@@ -105,19 +131,31 @@ function handleNoFocus() {
     v-model:visible="drawerVisible"
     v-if="drawerType === 'UserStories'"
     position="right"
-    header="聚焦用户故事"
+    :header="t('menu.focusOnUserStory').value"
     style="width: 40%"
   >
-    <Button label="无焦点" severity="info" @click="handleNoFocus"></Button>
+    <Select
+      v-model="currentStory"
+      :options="userStoriesOptions"
+      option-label="name"
+      option-value="code"
+      placeholder="Select a City"
+    ></Select>
+    <br />
+    <Button
+      :label="t('menu.focusOnUserStory.focusNothing').value"
+      severity="info"
+      @click="handleNoFocus"
+    ></Button>
     <Tabs v-model:value="currentStory" scrollable>
-      <TabList>
+      <!-- <TabList>
         <Tab
           v-for="i in Object.keys(diagramAgg.states.userStories.value)"
           :key="i"
           :value="i"
           >{{ i }}</Tab
         >
-      </TabList>
+      </TabList> -->
       <TabPanels>
         <TabPanel
           v-for="i in Object.keys(diagramAgg.states.userStories.value)"
@@ -141,7 +179,7 @@ function handleNoFocus() {
     v-model:visible="drawerVisible"
     v-if="drawerType === 'Settings'"
     position="right"
-    header="设置"
+    :header="t('menu.settings').value"
     style="width: 40%"
   >
     <div>
@@ -150,7 +188,7 @@ function handleNoFocus() {
         :true-value="true"
         :false-value="false"
       />
-      <label> 渲染读模型 </label>
+      <label> {{ t('menu.settings.renderReadModel') }} </label>
     </div>
     <div>
       <ToggleSwitch
@@ -158,7 +196,17 @@ function handleNoFocus() {
         :true-value="true"
         :false-value="false"
       />
-      <label> 渲染外部系统 </label>
+      <label> {{ t('menu.settings.renderExternalSystem') }} </label>
+    </div>
+    <Divider></Divider>
+    <div>
+      <label> {{ t('menu.settings.language') }} </label>
+      <SelectButton
+        v-model="language"
+        :options="languageOptions"
+        option-label="label"
+        option-value="value"
+      ></SelectButton>
     </div>
   </Drawer>
   <Nomnoml :source="sourceCode" />
