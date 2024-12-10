@@ -11,7 +11,7 @@ interface FocusFlowFn {
 
 function createAgg(data: DomainDesigner) {
   return createSingletonAgg(() => {
-    // ======================== 生成代码 ========================
+    // ======================== generating code ========================
     const design = ref(data)
     const displayReadModel = ref(true)
     const displaySystem = ref(true)
@@ -49,7 +49,7 @@ function createAgg(data: DomainDesigner) {
       return result
     })
 
-    // ======================== 聚焦流程 ========================
+    // ======================== focus on workflow ========================
     const onFocusFlow = createBroadcastEvent({
       userStory: '' as string,
       workflow: '' as string | null,
@@ -70,7 +70,7 @@ function createAgg(data: DomainDesigner) {
       })
     }
 
-    // ======================== 下载功能 ========================
+    // ======================== export ========================
     const downloadEnabled = ref(true)
     const onDownloadSvg = createBroadcastEvent({})
 
