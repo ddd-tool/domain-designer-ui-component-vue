@@ -1,5 +1,6 @@
 {
   "files": [],
+  "include": [],
   "references": [
     {
       "path": "./tsconfig.node.json"
@@ -15,6 +16,20 @@
     "module": "NodeNext",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "strict": true
+    "strict": true,
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "#lib/*": [
+        "./lib/*"
+      ],
+      "#domain/*": [
+        "./lib/domain/*"
+      ]
+    },
+    "types": [
+      "vite/client"
+    ]
   }
 }

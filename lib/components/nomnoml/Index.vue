@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import nomnoml from 'nomnoml'
-import { computed, ref, watchEffect } from 'vue'
+import { computed } from 'vue'
 import style from './style'
 import { useDiagramAgg } from '#lib/domain/diagram-agg'
 

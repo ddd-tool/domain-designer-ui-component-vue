@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Ui } from '#lib/index'
 import { ref } from 'vue'
-import defaultDesign from './design'
 
-const design = ref(defaultDesign)
+const design = ref()
+design.value = (await import('./design')).default
 </script>
 
 <template>
