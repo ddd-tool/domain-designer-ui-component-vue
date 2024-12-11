@@ -112,9 +112,13 @@ function fieldsToCode<
   const code = ['']
   for (const i in infos) {
     const info = infos[i]
-    if (info._attributes.type === 'Document') {
+    const type = info._attributes.type
+    if (type === 'Document') {
       code.push(`|+ ${info._attributes.name}: Document`)
-    } else if (isDomainDesignInfoFunc(info)) {
+    } else if (type === 'Function') {
+      if (!isDomainDesignInfoFunc(info)) {
+        throw new Error('not function')
+      }
       let len = info._attributes.subtype.length
       let dependsOn = info._attributes.subtype
         .map((i) => i._attributes.name)
@@ -123,10 +127,14 @@ function fieldsToCode<
         dependsOn = `\n${dependsOn}\n`
       }
       code.push(`|+ ${info._attributes.name}: Function<${dependsOn}>`)
-    } else if (info._attributes.type === 'Field') {
+    } else if (type === 'Field') {
       code.push(
         `|+ ${info._attributes.name}: ${info._attributes.type}<${info._attributes.subtype}>`
       )
+    } else if (type === 'Any') {
+      code.push(`|+ ${info._attributes.name}: Any`)
+    } else {
+      isNever(type)
     }
   }
   return code.join('\n')
