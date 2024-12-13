@@ -1,4 +1,4 @@
-import { computed, reactive, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { createBroadcastEvent, createSingletonAgg } from 'vue-fn/domain'
 import type { DomainDesigner } from '@ddd-tool/domain-designer-core'
 import { nomnomlCodeGenerator } from './gen-code'
@@ -9,14 +9,33 @@ interface FocusFlowFn {
   (workflow: string, userStory: string): void
 }
 
-function createAgg(data: DomainDesigner) {
+function createAgg(data: Record<string, DomainDesigner>) {
   return createSingletonAgg(() => {
+    const designRecords = ref(data)
+    const currentDesignKey = ref(
+      Object.keys(data).length ? Object.keys(data)[0] : undefined
+    )
+    const design = computed(() => {
+      if (!currentDesignKey.value) {
+        return undefined
+      }
+      return designRecords.value[currentDesignKey.value]
+    })
+    const designKeys = computed(() => {
+      if (!currentDesignKey.value) {
+        return []
+      }
+      return Object.keys(designRecords.value)
+    })
+
     // ======================== generating code ========================
-    const design = ref(data)
     const displayReadModel = ref(true)
     const displaySystem = ref(true)
     const code = computed(() => {
       console.debug('generate code')
+      if (!design.value) {
+        return ''
+      }
       const code: string[] = []
       const generator = nomnomlCodeGenerator(
         design.value,
@@ -32,10 +51,19 @@ function createAgg(data: DomainDesigner) {
     })
     const currentStory = ref('Others')
     const currentWorkflow = ref<null | string>(null)
-    const workflows = reactive(design.value._getContext().getWorkflows())
+    const workflows = computed(() => {
+      if (!design.value) {
+        return {}
+      }
+      return design.value._getContext().getWorkflows()
+    })
     const userStories = computed(() => {
+      if (!design.value) {
+        return { Others: [] }
+      }
+
       const result: Record<string, string[]> = {}
-      const workflowsTmp = Object.keys(workflows).map((w) => w)
+      const workflowsTmp = Object.keys(workflows.value).map((w) => w)
       for (const story in design.value._getContext().getUserStories()) {
         const values = design.value._getContext().getUserStories()[story]
         for (const f of values) {
@@ -76,11 +104,13 @@ function createAgg(data: DomainDesigner) {
 
     return {
       states: {
+        designKeys,
         code,
         userStories,
         workflows,
         currentWorkflow,
         currentStory,
+        currentDesignKey,
         downloadEnabled,
         displayReadModel,
         displaySystem,
@@ -99,7 +129,13 @@ function createAgg(data: DomainDesigner) {
         setDisplaySystem(b: boolean) {
           displaySystem.value = b
         },
+        switchDesign(key: string) {
+          currentDesignKey.value = key
+        },
         getIdMap() {
+          if (!design.value) {
+            return {}
+          }
           return design.value._getContext().getIdMap()
         },
       },
@@ -108,7 +144,7 @@ function createAgg(data: DomainDesigner) {
   })
 }
 
-export function useDiagramAgg(data?: DomainDesigner) {
+export function useDiagramAgg(data?: Record<string, DomainDesigner>) {
   if (!agg) {
     if (!data) {
       throw new Error('need data')

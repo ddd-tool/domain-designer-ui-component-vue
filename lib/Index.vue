@@ -4,8 +4,6 @@ import { useDiagramAgg } from '#domain/diagram-agg'
 import Drawer from 'primevue/drawer'
 import Select from 'primevue/select'
 import Tabs from 'primevue/tabs'
-// import Tab from 'primevue/tab'
-// import TabList from 'primevue/tablist'
 import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import Button from 'primevue/button'
@@ -16,19 +14,18 @@ import Divider from 'primevue/divider'
 import Dock from 'primevue/dock'
 import { computed, ref, watch } from 'vue'
 import { useI18nAgg } from './domain/i18n-agg'
+import type { DomainDesigner } from '@ddd-tool/domain-designer-core'
 
-const props = defineProps({
-  design: {
-    type: Object,
-    required: true,
-  },
-})
+export type NonEmptyObject<T extends object> = keyof T extends never ? never : T
+interface Props {
+  designs: NonEmptyObject<Record<string, DomainDesigner>>
+}
+
+const props = defineProps<Props>()
 
 const i18nAgg = useI18nAgg()
 const t = i18nAgg.commands.$t
-const diagramAgg = useDiagramAgg(props.design as any)
-
-const sourceCode = diagramAgg.states.code
+const diagramAgg = useDiagramAgg(props.designs)
 
 // =========================== Settings ===========================
 const drawerVisible = ref(false)
@@ -43,12 +40,24 @@ watch(displaySystem, (v) => {
 })
 const language = ref(i18nAgg.states.currentLanguage.value)
 const languageOptions = ref([
-  { label: 'English', value: 'en-US' },
   { label: '简体中文', value: 'zh-CN' },
+  { label: 'English', value: 'en-US' },
 ])
 watch(language, (v) => {
   i18nAgg.commands.setLanguage(v)
 })
+const currentDesignKey = ref(diagramAgg.states.currentDesignKey.value!)
+watch(currentDesignKey, (v) => {
+  diagramAgg.commands.switchDesign(v)
+})
+const designKeyOptions = computed(() => {
+  const result: { label: string; value: string }[] = []
+  for (const key of diagramAgg.states.designKeys.value) {
+    result.push({ label: key, value: key })
+  }
+  return result
+})
+console.debug('Current DesignKey', currentDesignKey.value)
 
 // =========================== User Stories ===========================
 const currentStory = ref('Others')
@@ -148,21 +157,16 @@ function handleNoFocus() {
       @click="handleNoFocus"
     ></Button>
     <Tabs v-model:value="currentStory" scrollable>
-      <!-- <TabList>
-        <Tab
-          v-for="i in Object.keys(diagramAgg.states.userStories.value)"
-          :key="i"
-          :value="i"
-          >{{ i }}</Tab
-        >
-      </TabList> -->
       <TabPanels>
         <TabPanel
           v-for="i in Object.keys(diagramAgg.states.userStories.value)"
           :key="i"
           :value="i"
         >
-          <div v-for="f in diagramAgg.states.userStories.value[i]" :key="f">
+          <div
+            v-for="f of Object.values(diagramAgg.states.userStories.value[i])"
+            :key="f"
+          >
             <RadioButton
               v-model="currentWorkflow"
               :inputId="f"
@@ -208,8 +212,18 @@ function handleNoFocus() {
         option-value="value"
       ></SelectButton>
     </div>
+    <Divider></Divider>
+    <div>
+      <label> {{ t('menu.settings.dataSource') }} </label>
+      <SelectButton
+        v-model="currentDesignKey"
+        :options="designKeyOptions"
+        option-label="label"
+        option-value="value"
+      ></SelectButton>
+    </div>
   </Drawer>
-  <Nomnoml :source="sourceCode" />
+  <Nomnoml />
 </template>
 
 <style scoped>

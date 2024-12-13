@@ -113,8 +113,8 @@ function fieldsToCode<
   for (const i in infos) {
     const info = infos[i]
     const type = info._attributes.type
-    if (type === 'Document') {
-      code.push(`|+ ${info._attributes.name}: Document`)
+    if (type === 'Entity') {
+      code.push(`|+ ${info._attributes.name}: Entity`)
     } else if (type === 'Function') {
       if (!isDomainDesignInfoFunc(info)) {
         throw new Error('not function')

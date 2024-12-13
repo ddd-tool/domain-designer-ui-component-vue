@@ -8,6 +8,7 @@ const messages: I18nMessages = {
   'menu.settings.renderExternalSystem': 'Render `System`',
   'menu.settings.renderReadModel': 'Render `Read Model`',
   'menu.settings.language': 'Language',
+  'menu.settings.dataSource': 'Data Source',
   'menu.exportSvg': 'Export SVG',
   'menu.replayWorkflow': 'Replay Workflow',
 }

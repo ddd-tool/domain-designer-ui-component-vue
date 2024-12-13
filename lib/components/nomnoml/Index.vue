@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import nomnoml from 'nomnoml'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import style from './style'
 import { useDiagramAgg } from '#lib/domain/diagram-agg'
 
 const diagramAgg = useDiagramAgg()
 
+const currentStory = ref(diagramAgg.states.currentStory.value)
 const svgCode = computed(() => {
   return nomnoml.renderSvg(style + diagramAgg.states.code.value)
 })
@@ -49,7 +50,9 @@ diagramAgg.events.onFocusFlow.watchPublish(({ data }) => {
     }
   >
   let items: readonly string[] =
-    data.workflow === null ? [] : diagramAgg.states.workflows[data.workflow]
+    data.workflow === null
+      ? []
+      : diagramAgg.states.workflows.value[data.workflow]
   items = items.filter((i) => {
     let b = true
     if (!data.displayReadModel && idMap[i]._attributes.rule === 'ReadModel') {
@@ -96,7 +99,7 @@ function removeAdjacentDuplicates(arr: readonly string[]): string[] {
   return result
 }
 
-// ============================ 下载 ============================
+// ============================ download ============================
 diagramAgg.events.onDownloadSvg.watchPublish(() => {
   const el = document.querySelector('svg') as SVGSVGElement
   const svg = new XMLSerializer().serializeToString(el)
@@ -111,5 +114,14 @@ diagramAgg.events.onDownloadSvg.watchPublish(() => {
 </script>
 
 <template>
-  <div v-html="svgCode"></div>
+  <div class="nomnoml">
+    <div v-html="svgCode"></div>
+  </div>
 </template>
+
+<style scoped>
+.nomnoml {
+  height: 100%;
+  overflow: auto;
+}
+</style>

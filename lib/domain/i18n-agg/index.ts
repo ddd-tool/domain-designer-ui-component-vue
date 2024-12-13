@@ -4,12 +4,12 @@ import type { I18nMessages, I18nMessageKeys } from './message'
 import enUS from './locale/en-US'
 import zhCN from './locale/zh-CN'
 
-export const validLanguages = ['en-US', 'zh-CN'] as const
+export const validLanguages = ['zh-CN', 'en-US'] as const
 export type Language = (typeof validLanguages)[number]
 
 const agg = createSingletonAgg(() => {
   const locale = ref<I18nMessages>(enUS)
-  const currentLanguage = ref<Language>('en-US')
+  const currentLanguage = ref<Language>('zh-CN')
 
   function t(key: I18nMessageKeys, defaultValue?: string): string
   function t(

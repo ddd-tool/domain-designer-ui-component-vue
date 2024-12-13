@@ -8,6 +8,7 @@ const messages: I18nMessages = {
   'menu.settings.renderExternalSystem': '渲染外部系统',
   'menu.settings.renderReadModel': '渲染读模型',
   'menu.settings.language': '语言',
+  'menu.settings.dataSource': '数据源',
   'menu.exportSvg': '导出SVG',
   'menu.replayWorkflow': '重播工作流',
 }
