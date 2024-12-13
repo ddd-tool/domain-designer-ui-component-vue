@@ -215,12 +215,14 @@ function handleNoFocus() {
     <Divider></Divider>
     <div>
       <label> {{ t('menu.settings.dataSource') }} </label>
-      <SelectButton
-        v-model="currentDesignKey"
-        :options="designKeyOptions"
-        option-label="label"
-        option-value="value"
-      ></SelectButton>
+      <div v-for="(item, index) in designKeyOptions" :key="index">
+        <RadioButton
+          v-model="currentDesignKey"
+          :input-id="item.value"
+          :value="item.value"
+        ></RadioButton>
+        <label :for="item.value"> {{ item.label }} </label>
+      </div>
     </div>
   </Drawer>
   <Nomnoml />
