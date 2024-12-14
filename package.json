@@ -1,5 +1,5 @@
 {
-  "name": "domain-designer-ui-component",
+  "name": "@ddd-tool/domain-designer-ui-component",
   "version": "0.0.0-alpha.0",
   "private": true,
   "type": "module",

@@ -17,6 +17,7 @@ export default defineConfig({
     minify: 'esbuild',
     outDir: 'dist',
     target: 'esnext',
+    cssCodeSplit: true,
     lib: {
       entry: fileURLToPath(new URL('./lib/index.ts', import.meta.url)),
       name: 'domain-design-ui-component',
