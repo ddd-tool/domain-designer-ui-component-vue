@@ -17,7 +17,7 @@ export default defineConfig({
     minify: 'esbuild',
     outDir: 'dist',
     target: 'esnext',
-    // cssCodeSplit: true,
+    cssCodeSplit: true,
     lib: {
       entry: fileURLToPath(new URL('./lib/index.ts', import.meta.url)),
       name: 'domain-design-ui-component',
@@ -25,10 +25,12 @@ export default defineConfig({
       formats: ['es'],
     },
     rollupOptions: {
-      external: ['vue'],
+      external: ['vue', 'primevue', '@primevue/themes'],
       output: {
         globals: {
           vue: '__Vue',
+          primevue: '__PrimeVue',
+          '@primevue/themes': '__PrimeVueThemes',
         },
       },
     },
