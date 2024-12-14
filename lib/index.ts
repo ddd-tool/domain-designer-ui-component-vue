@@ -1,3 +1,3 @@
-import Ui from './Index.vue'
+import Ui from './UI.vue'
 
 export { Ui }

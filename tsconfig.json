@@ -23,6 +23,10 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strict": true,
+    "types": [
+      "node",
+      "vite/client"
+    ],
     "paths": {
       "@/*": [
         "./src/*"
@@ -34,8 +38,5 @@
         "./lib/domain/*"
       ]
     },
-    "types": [
-      "vite/client"
-    ]
   }
 }

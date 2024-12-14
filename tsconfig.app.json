@@ -19,6 +19,9 @@
     "noUnusedParameters": true,
     "declaration": true,
     "declarationDir": "dist",
+    "types": [
+      "vite/client"
+    ],
     "paths": {
       "@/*": [
         "./src/*"
@@ -30,8 +33,5 @@
         "./lib/domain/*"
       ]
     },
-    "types": [
-      "vite/client"
-    ]
   }
 }
