@@ -13,4 +13,23 @@ export default defineConfig({
       '#domain': fileURLToPath(new URL('./lib/domain', import.meta.url)),
     },
   },
+  build: {
+    minify: 'esbuild',
+    outDir: 'dist',
+    target: 'esnext',
+    lib: {
+      entry: fileURLToPath(new URL('./lib/index.ts', import.meta.url)),
+      name: 'domain-design-ui-component',
+      fileName: 'index',
+      formats: ['es'],
+    },
+    rollupOptions: {
+      external: ['vue'],
+      output: {
+        globals: {
+          vue: '__Vue',
+        },
+      },
+    },
+  },
 })

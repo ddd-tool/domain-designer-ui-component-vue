@@ -1,28 +1,22 @@
 <script setup lang="ts">
 import nomnoml from 'nomnoml'
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import style from './style'
 import { useDiagramAgg } from '#lib/domain/diagram-agg'
 
 const diagramAgg = useDiagramAgg()
 
-const currentStory = ref(diagramAgg.states.currentStory.value)
 const svgCode = computed(() => {
   return nomnoml.renderSvg(style + diagramAgg.states.code.value)
 })
 
 // ======================= focusOnWorkFlow/playWorkflow =======================
 let currentAnimationTask = 0
-function startWorkflowAnimation(
-  animationTask: number,
-  nodes: readonly string[]
-) {
+function startWorkflowAnimation(animationTask: number, nodes: readonly string[]) {
   diagramAgg.commands.setDownloadEnabled(false)
   let t = 0
   for (let i = 0; i < nodes.length; i++) {
-    const el = document.querySelector(
-      `[data-name="${nodes[i]}"]`
-    ) as SVGGElement
+    const el = document.querySelector(`[data-name="${nodes[i]}"]`) as SVGGElement
     setTimeout(() => {
       if (animationTask !== currentAnimationTask) return
       el.style.transition = `opacity 0s`
@@ -49,10 +43,7 @@ diagramAgg.events.onFocusFlow.watchPublish(({ data }) => {
       }
     }
   >
-  let items: readonly string[] =
-    data.workflow === null
-      ? []
-      : diagramAgg.states.workflows.value[data.workflow]
+  let items: readonly string[] = data.workflow === null ? [] : diagramAgg.states.workflows.value[data.workflow]
   items = items.filter((i) => {
     let b = true
     if (!data.displayReadModel && idMap[i]._attributes.rule === 'ReadModel') {

@@ -1,8 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Index from './views/Index.vue'
+</script>
 
 <template>
   <Suspense>
-    <RouterView />
+    <Index />
     <template #fallback>
       <h1>Loading...</h1>
     </template>
