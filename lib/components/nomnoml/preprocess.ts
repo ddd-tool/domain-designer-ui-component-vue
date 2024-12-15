@@ -30,6 +30,9 @@ export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domS
       continue
     }
     const nodeDoc = svgDoc.querySelector(`[data-name="${node._attributes.__code}"]`)! as HTMLElement
+    if (!nodeDoc) {
+      continue
+    }
     let index = 0
     for (const key of Object.keys(node.inner)) {
       index++
