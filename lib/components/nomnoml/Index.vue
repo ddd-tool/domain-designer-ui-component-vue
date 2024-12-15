@@ -1,21 +1,28 @@
 <script setup lang="ts">
 import nomnoml from 'nomnoml'
-import { computed } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import style from './style'
 import { useDiagramAgg } from '#lib/domain/diagram-agg'
+import { preprocessSvg } from './preprocess'
 
 const diagramAgg = useDiagramAgg()
 
-const svgCode = computed(() => {
-  return nomnoml.renderSvg(style + diagramAgg.states.code.value)
-  // const codeStr = nomnoml.renderSvg(style + diagramAgg.states.code.value)
-  // const parser = new DOMParser()
-  // const svgDoc = parser.parseFromString(codeStr, 'image/svg+xml')
-  // const context = diagramAgg.states.design.value?._getContext()
-  // const serializer = new XMLSerializer()
-  // const updatedSvgString = serializer.serializeToString(svgDoc)
-  // return updatedSvgString
+const svgDom = computed(() => {
+  return preprocessSvg(diagramAgg, nomnoml.renderSvg(style + diagramAgg.states.code.value))
 })
+const svgContainerRef = ref<HTMLDivElement>()
+onMounted(() => {
+  appendSvg()
+})
+watch(svgDom, () => {
+  appendSvg()
+})
+function appendSvg() {
+  for (const child of svgContainerRef.value!.children) {
+    svgContainerRef.value!.removeChild(child)
+  }
+  svgContainerRef.value!.appendChild(svgDom.value)
+}
 
 // ======================= focusOnWorkFlow/playWorkflow =======================
 let currentAnimationTask = 0
@@ -113,7 +120,7 @@ diagramAgg.events.onDownloadSvg.watchPublish(() => {
 
 <template>
   <div class="nomnoml">
-    <div v-html="svgCode"></div>
+    <div ref="svgContainerRef"></div>
   </div>
 </template>
 
@@ -121,5 +128,12 @@ diagramAgg.events.onDownloadSvg.watchPublish(() => {
 .nomnoml {
   height: 100%;
   overflow: auto;
+}
+</style>
+<style>
+.nomnoml .highlight text {
+  font-weight: bold;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
 }
 </style>
