@@ -12,6 +12,7 @@ import ToggleSwitch from 'primevue/toggleswitch'
 import SelectButton from 'primevue/selectbutton'
 import Divider from 'primevue/divider'
 import Dock from 'primevue/dock'
+import Slider from 'primevue/slider'
 import { computed, ref, watch } from 'vue'
 import { useI18nAgg } from './domain/i18n-agg'
 import type { DomainDesigner } from '@ddd-tool/domain-designer-core'
@@ -58,7 +59,10 @@ const designKeyOptions = computed(() => {
   }
   return result
 })
-console.debug('Current DesignKey', currentDesignKey.value)
+const renderScale = ref(diagramAgg.states.renderScale.value)
+watch(renderScale, (v) => {
+  diagramAgg.commands.setRenderScale(v)
+})
 
 // =========================== User Stories ===========================
 const currentStory = ref('Others')
@@ -171,6 +175,9 @@ function handleNoFocus() {
     :header="t('menu.settings').value"
     style="width: 40%"
   >
+    <label>缩放: {{ renderScale * 100 + '%' }}</label>
+    <Slider v-model="renderScale" :step="0.1" :min="0.5" :max="1"></Slider>
+    <Divider></Divider>
     <div>
       <ToggleSwitch v-model="displayReadModel" :true-value="true" :false-value="false" />
       <label> {{ t('menu.settings.renderReadModel') }} </label>

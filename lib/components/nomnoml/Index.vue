@@ -120,7 +120,7 @@ diagramAgg.events.onDownloadSvg.watchPublish(() => {
 
 <template>
   <div class="nomnoml">
-    <div ref="svgContainerRef"></div>
+    <div ref="svgContainerRef" :style="{ scale: diagramAgg.states.renderScale.value }"></div>
   </div>
 </template>
 
@@ -135,5 +135,12 @@ diagramAgg.events.onDownloadSvg.watchPublish(() => {
   font-weight: bold;
   text-decoration: underline;
   text-decoration-thickness: 1px;
+}
+.p-dock {
+  opacity: 0.4;
+  transition: 0.5s;
+}
+.p-dock:hover {
+  opacity: 1;
 }
 </style>
