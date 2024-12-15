@@ -48,6 +48,7 @@ watch(language, (v) => {
 })
 const currentDesignKey = ref(diagramAgg.states.currentDesignKey.value!)
 watch(currentDesignKey, (v) => {
+  handleNoFocus()
   diagramAgg.commands.switchDesign(v)
 })
 const designKeyOptions = computed(() => {
@@ -151,28 +152,12 @@ function handleNoFocus() {
       placeholder="Select a City"
     ></Select>
     <br />
-    <Button
-      :label="t('menu.focusOnUserStory.focusNothing').value"
-      severity="info"
-      @click="handleNoFocus"
-    ></Button>
+    <Button :label="t('menu.focusOnUserStory.focusNothing').value" severity="info" @click="handleNoFocus"></Button>
     <Tabs v-model:value="currentStory" scrollable>
       <TabPanels>
-        <TabPanel
-          v-for="i in Object.keys(diagramAgg.states.userStories.value)"
-          :key="i"
-          :value="i"
-        >
-          <div
-            v-for="f of Object.values(diagramAgg.states.userStories.value[i])"
-            :key="f"
-          >
-            <RadioButton
-              v-model="currentWorkflow"
-              :inputId="f"
-              :name="i"
-              :value="f"
-            ></RadioButton>
+        <TabPanel v-for="i in Object.keys(diagramAgg.states.userStories.value)" :key="i" :value="i">
+          <div v-for="f of Object.values(diagramAgg.states.userStories.value[i])" :key="f">
+            <RadioButton v-model="currentWorkflow" :inputId="f" :name="i" :value="f"></RadioButton>
             <label :for="f">{{ f }}</label>
           </div>
         </TabPanel>
@@ -187,19 +172,11 @@ function handleNoFocus() {
     style="width: 40%"
   >
     <div>
-      <ToggleSwitch
-        v-model="displayReadModel"
-        :true-value="true"
-        :false-value="false"
-      />
+      <ToggleSwitch v-model="displayReadModel" :true-value="true" :false-value="false" />
       <label> {{ t('menu.settings.renderReadModel') }} </label>
     </div>
     <div>
-      <ToggleSwitch
-        v-model="displaySystem"
-        :true-value="true"
-        :false-value="false"
-      />
+      <ToggleSwitch v-model="displaySystem" :true-value="true" :false-value="false" />
       <label> {{ t('menu.settings.renderExternalSystem') }} </label>
     </div>
     <Divider></Divider>
@@ -216,11 +193,7 @@ function handleNoFocus() {
     <div>
       <label> {{ t('menu.settings.dataSource') }} </label>
       <div v-for="(item, index) in designKeyOptions" :key="index">
-        <RadioButton
-          v-model="currentDesignKey"
-          :input-id="item.value"
-          :value="item.value"
-        ></RadioButton>
+        <RadioButton v-model="currentDesignKey" :input-id="item.value" :value="item.value"></RadioButton>
         <label :for="item.value"> {{ item.label }} </label>
       </div>
     </div>
