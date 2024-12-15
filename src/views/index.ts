@@ -26,6 +26,22 @@ const data: Record<string, DomainDesigner> = {
   'design-en111': (await import('./design-en')).default,
   'design-en222': (await import('./design-en')).default,
   'design-en333': (await import('./design-en')).default,
+  'design-en444': (await import('./design-en')).default,
+  'design-en555': (await import('./design-en')).default,
+  'design-en666': (await import('./design-en')).default,
+  'design-en777': (await import('./design-en')).default,
+  'design-en888': (await import('./design-en')).default,
+  'design-en999': (await import('./design-en')).default,
+  'design-en000': (await import('./design-en')).default,
+  'design-en1111': (await import('./design-en')).default,
+  'design-en2222': (await import('./design-en')).default,
+  'design-en3333': (await import('./design-en')).default,
+  'design-en4444': (await import('./design-en')).default,
+  'design-en5555': (await import('./design-en')).default,
+  'design-en6666': (await import('./design-en')).default,
+  'design-en7777': (await import('./design-en')).default,
+  'design-en8888': (await import('./design-en')).default,
+  'design-en9999': (await import('./design-en')).default,
 }
 
 export default data

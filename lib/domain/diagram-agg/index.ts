@@ -12,9 +12,7 @@ interface FocusFlowFn {
 function createAgg(data: Record<string, DomainDesigner>) {
   return createSingletonAgg(() => {
     const designRecords = ref(data)
-    const currentDesignKey = ref(
-      Object.keys(data).length ? Object.keys(data)[0] : undefined
-    )
+    const currentDesignKey = ref(Object.keys(data).length ? Object.keys(data)[0] : undefined)
     const design = computed(() => {
       if (!currentDesignKey.value) {
         return undefined
@@ -37,11 +35,7 @@ function createAgg(data: Record<string, DomainDesigner>) {
         return ''
       }
       const code: string[] = []
-      const generator = nomnomlCodeGenerator(
-        design.value,
-        displayReadModel.value,
-        displaySystem.value
-      )
+      const generator = nomnomlCodeGenerator(design.value, displayReadModel.value, displaySystem.value)
       let item = generator.next()
       while (!item.done) {
         code.push(item.value)
@@ -104,6 +98,7 @@ function createAgg(data: Record<string, DomainDesigner>) {
 
     return {
       states: {
+        design,
         designKeys,
         code,
         userStories,

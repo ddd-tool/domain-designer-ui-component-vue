@@ -8,6 +8,13 @@ const diagramAgg = useDiagramAgg()
 
 const svgCode = computed(() => {
   return nomnoml.renderSvg(style + diagramAgg.states.code.value)
+  // const codeStr = nomnoml.renderSvg(style + diagramAgg.states.code.value)
+  // const parser = new DOMParser()
+  // const svgDoc = parser.parseFromString(codeStr, 'image/svg+xml')
+  // const context = diagramAgg.states.design.value?._getContext()
+  // const serializer = new XMLSerializer()
+  // const updatedSvgString = serializer.serializeToString(svgDoc)
+  // return updatedSvgString
 })
 
 // ======================= focusOnWorkFlow/playWorkflow =======================
