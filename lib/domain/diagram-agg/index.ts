@@ -5,7 +5,7 @@ import { nomnomlCodeGenerator } from './gen-code'
 
 let agg: ReturnType<typeof createAgg>
 interface FocusFlowFn {
-  (workflow: null, userStory?: string): void
+  (workflow: undefined, userStory?: string): void
   (workflow: string, userStory: string): void
 }
 
@@ -44,7 +44,7 @@ function createAgg(data: Record<string, DomainDesigner>) {
       return code.join('\n')
     })
     const currentStory = ref('Others')
-    const currentWorkflow = ref<null | string>(null)
+    const currentWorkflow = ref<string | undefined>()
     const workflows = computed(() => {
       if (!design.value) {
         return {}
@@ -74,14 +74,14 @@ function createAgg(data: Record<string, DomainDesigner>) {
     // ======================== focus on workflow ========================
     const onFocusFlow = createBroadcastEvent({
       userStory: '' as string,
-      workflow: '' as string | null,
+      workflow: '' as string | undefined,
       displayReadModel,
       displaySystem,
     })
 
-    function focusFlow(workflow: null): void
+    function focusFlow(workflow: undefined): void
     function focusFlow(workflow: string, userStory: string): void
-    function focusFlow(workflow: string | null, userStory: string = 'Others') {
+    function focusFlow(workflow: string | undefined, userStory: string = 'Others') {
       currentWorkflow.value = workflow
       currentStory.value = userStory
       onFocusFlow.publish({
@@ -91,6 +91,10 @@ function createAgg(data: Record<string, DomainDesigner>) {
         displaySystem: displaySystem.value,
       })
     }
+
+    // ======================== focus on info ========================
+    const currentInfo = ref<string | undefined>()
+    const onFocusInfo = createBroadcastEvent({ id: '' as string | undefined })
 
     // ======================== export ========================
     const downloadEnabled = ref(true)
@@ -109,6 +113,7 @@ function createAgg(data: Record<string, DomainDesigner>) {
         currentWorkflow,
         currentStory,
         currentDesignKey,
+        currentInfo,
         downloadEnabled,
         displayReadModel,
         displaySystem,
@@ -131,6 +136,9 @@ function createAgg(data: Record<string, DomainDesigner>) {
         setRenderScale(scale: number) {
           renderScale.value = scale
         },
+        setCurrentInfo(id: string | undefined) {
+          onFocusInfo.publish({ id })
+        },
         switchDesign(key: string) {
           currentDesignKey.value = key
         },
@@ -141,7 +149,7 @@ function createAgg(data: Record<string, DomainDesigner>) {
           return design.value._getContext().getIdMap()
         },
       },
-      events: { onFocusFlow, onDownloadSvg },
+      events: { onFocusInfo, onFocusFlow, onDownloadSvg },
     }
   })
 }

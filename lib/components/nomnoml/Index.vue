@@ -18,11 +18,20 @@ watch(svgDom, () => {
   appendSvg()
 })
 function appendSvg() {
-  for (const child of svgContainerRef.value!.children) {
+  for (const child of svgContainerRef.value!.children as unknown as HTMLElement[]) {
     svgContainerRef.value!.removeChild(child)
   }
   svgContainerRef.value!.appendChild(svgDom.value)
 }
+
+// ======================= focusOnInfo =======================
+diagramAgg.events.onFocusInfo.watchPublish(({ data }) => {
+  if (data.id === undefined) {
+    for (const el of document.querySelectorAll('svg .active') as unknown as HTMLElement[]) {
+      el.classList.remove('active')
+    }
+  }
+})
 
 // ======================= focusOnWorkFlow/playWorkflow =======================
 let currentAnimationTask = 0
@@ -57,7 +66,7 @@ diagramAgg.events.onFocusFlow.watchPublish(({ data }) => {
       }
     }
   >
-  let items: readonly string[] = data.workflow === null ? [] : diagramAgg.states.workflows.value[data.workflow]
+  let items: readonly string[] = data.workflow === undefined ? [] : diagramAgg.states.workflows.value[data.workflow]
   items = items.filter((i) => {
     let b = true
     if (!data.displayReadModel && idMap[i]._attributes.rule === 'ReadModel') {
@@ -72,7 +81,7 @@ diagramAgg.events.onFocusFlow.watchPublish(({ data }) => {
   }
   const map: Record<string, boolean> = {}
 
-  const doms = document.querySelectorAll('g')
+  const doms = document.querySelectorAll('g') as unknown as SVGGElement[]
   if (items.length === 0) {
     for (const dom of doms) {
       dom.style.transition = 'opacity 0s'
@@ -131,10 +140,33 @@ diagramAgg.events.onDownloadSvg.watchPublish(() => {
 }
 </style>
 <style>
-.nomnoml .highlight text {
-  font-weight: bold;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
+.nomnoml text {
+  cursor: pointer;
+}
+@keyframes shining-hover {
+  from {
+    stroke-width: 1px;
+    stroke-opacity: 0.2;
+    stroke: #000;
+    -webkit-text-stroke-color: #000;
+  }
+  to {
+    stroke-width: 1px;
+    stroke-opacity: 0.8;
+    stroke: #000;
+    -webkit-text-stroke-color: #000;
+  }
+}
+.nomnoml .highlight:not(.active) text {
+  animation: shining-hover 0.6s alternate infinite;
+  -webkit-animation: shining-hover 0.6s alternate infinite;
+  -moz-animation: shining-hover 0.6s alternate infinite;
+}
+.nomnoml .active text {
+  stroke-width: 1px;
+  stroke-opacity: 0.8;
+  stroke: #000;
+  -webkit-text-stroke-color: #000;
 }
 .p-dock {
   opacity: 0.4;

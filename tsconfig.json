@@ -19,9 +19,11 @@
     }
   ],
   "compilerOptions": {
-    "module": "NodeNext",
+    "module": "ES2020",
+    "moduleResolution": "bundler",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "skipLibCheck": false,
     "strict": true,
     "types": [
       "node",

@@ -4,15 +4,19 @@ export default `
 #.readModel: visual=class fill=#77dd77 title=bold
 #.aggregation: visual=class fill=#fdfd9d title=bold
 #.service: fill=#eee8d5 title=bold
+#.system: fill=#eee8d5 title=bold
 #.event: visual=class fill=#ffcb81 title=bold
 #.policy: fill=#b6a2db title=bold
 #.person: virtual=actor fill=#b6a2db title=bold
 
-// #padding: 8
-// #spacing: 20
-// #edgeMargin: 0
-// #ranker: network-simplex
-// #ranker: tight-tree
-// #ranker: longest-path
+//#bendSize: 0.3
+#padding: 8
+//#spacing: 40
+#edgeMargin: 0
+#lineWidth: 2.5
+#leading: 1.2
+//#zoom: 1
+#font: Times New Roman //consolas,Monaco
+#fontSize: 14
 
 `

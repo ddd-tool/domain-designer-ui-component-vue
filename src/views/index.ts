@@ -1,7 +1,7 @@
 import type { DomainDesigner } from '@ddd-tool/domain-designer-core'
 
 const data: Record<string, DomainDesigner> = {
-  user: (await import('F:/idea_projects/oneboot/.sdk/uml/demo/user.ts')).default,
+  user: (await import('F:/idea_projects/oneboot/.sdk/design/用户聚合.ts')).default,
   'design-zh': (await import('./design-zh')).default,
   'design-en': (await import('./design-en')).default,
   'design-en2': (await import('./design-en')).default,

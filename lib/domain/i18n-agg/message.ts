@@ -1,4 +1,13 @@
 export type I18nMessageKeys =
+  | 'constant.type'
+  | 'constant.type.id'
+  | 'constant.type.document'
+  | 'constant.type.function'
+  | 'constant.type.valueObject'
+  | 'constant.type.version'
+  | 'constant.subtype'
+  | 'constant.description'
+  | 'constant.empty'
   | 'constant.others'
   | 'menu.focusOnUserStory'
   | 'menu.focusOnUserStory.focusNothing'

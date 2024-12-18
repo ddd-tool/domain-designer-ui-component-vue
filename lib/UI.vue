@@ -13,9 +13,11 @@ import SelectButton from 'primevue/selectbutton'
 import Divider from 'primevue/divider'
 import Dock from 'primevue/dock'
 import Slider from 'primevue/slider'
+import Fieldset from 'primevue/fieldset'
 import { computed, ref, watch } from 'vue'
 import { useI18nAgg } from './domain/i18n-agg'
-import type { DomainDesigner } from '@ddd-tool/domain-designer-core'
+import type { DomainDesigner, DomainDesignInfo, DomainDesignInfoType } from '@ddd-tool/domain-designer-core'
+import { parseInfo } from './ui'
 
 export type NonEmptyObject<T extends object> = keyof T extends never ? never : T
 interface Props {
@@ -27,6 +29,48 @@ const props = defineProps<Props>()
 const i18nAgg = useI18nAgg()
 const t = i18nAgg.commands.$t
 const diagramAgg = useDiagramAgg(props.designs)
+
+// =========================== Focus Info ===========================
+let focusInfoTask = '0'
+const infoDetailCollapsed = ref(diagramAgg.states.currentInfo.value === undefined)
+watch(infoDetailCollapsed, (v) => {
+  if (v) {
+    diagramAgg.commands.setCurrentInfo(undefined)
+  }
+})
+const currentInfo = ref(diagramAgg.states.currentInfo.value)
+const infoDetailVisible = computed(() => currentInfo.value !== undefined)
+const infoDetail = computed(() => {
+  if (!currentInfo.value) {
+    return parseInfo(undefined)
+  }
+  const info = diagramAgg.states.design.value?._getContext().getIdMap()[currentInfo.value] as DomainDesignInfo<
+    DomainDesignInfoType,
+    string
+  >
+  return parseInfo(info)
+})
+diagramAgg.events.onFocusInfo.watchPublish(({ data, version }) => {
+  focusInfoTask = version
+  if (data.id === undefined) {
+    if (!infoDetailVisible.value) {
+      return
+    }
+    infoDetailCollapsed.value = true
+    setTimeout(() => {
+      if (focusInfoTask === version) {
+        currentInfo.value = data.id
+      }
+    }, 500)
+    return
+  }
+  currentInfo.value = data.id
+  setTimeout(() => {
+    if (focusInfoTask === version) {
+      infoDetailCollapsed.value = false
+    }
+  }, 0)
+})
 
 // =========================== Settings ===========================
 const drawerVisible = ref(false)
@@ -66,7 +110,7 @@ watch(renderScale, (v) => {
 
 // =========================== User Stories ===========================
 const currentStory = ref('Others')
-const currentWorkflow = ref<null | string>(null)
+const currentWorkflow = ref<undefined | string>()
 const userStoriesOptions = computed(() => {
   const result: { name: string; code: string }[] = []
   for (const story in diagramAgg.states.userStories.value) {
@@ -80,9 +124,9 @@ const dockItems = ref([
   {
     label: t('menu.replayWorkflow'),
     icon: 'pi pi-play-circle',
-    disabled: computed(() => diagramAgg.states.currentWorkflow.value === null),
+    disabled: computed(() => diagramAgg.states.currentWorkflow.value === undefined),
     command() {
-      if (currentWorkflow.value === null) {
+      if (currentWorkflow.value === undefined) {
         diagramAgg.commands.focusFlow(currentWorkflow.value)
       } else {
         diagramAgg.commands.focusFlow(currentWorkflow.value, currentStory.value)
@@ -115,15 +159,15 @@ const dockItems = ref([
   },
 ])
 watch([currentStory, currentWorkflow], ([story, workflow]) => {
-  if (workflow === null) {
-    diagramAgg.commands.focusFlow(null)
+  if (workflow === undefined) {
+    diagramAgg.commands.focusFlow(undefined)
     return
   }
-  diagramAgg.commands.focusFlow(workflow, story)
+  diagramAgg.commands.focusFlow(workflow!, story)
 })
 function handleNoFocus() {
   currentStory.value = 'Others'
-  currentWorkflow.value = null
+  currentWorkflow.value = undefined
 }
 </script>
 
@@ -206,6 +250,24 @@ function handleNoFocus() {
     </div>
   </Drawer>
   <Nomnoml />
+  <Fieldset
+    v-show="infoDetailVisible"
+    v-model:collapsed="infoDetailCollapsed"
+    :toggleable="true"
+    style="position: absolute; right: 1.5rem; top: 0; width: 30%"
+    :legend="infoDetail.name"
+  >
+    <h2>{{ infoDetail.name }}</h2>
+    <Divider></Divider>
+    <h3>{{ t('constant.type') }}:</h3>
+    <p>{{ infoDetail.type }}</p>
+    <Divider></Divider>
+    <h3>{{ t('constant.subtype') }}:</h3>
+    <p>{{ infoDetail.subtype }}</p>
+    <Divider></Divider>
+    <h3>{{ t('constant.description') }}:</h3>
+    <p>{{ infoDetail.desc }}</p>
+  </Fieldset>
 </template>
 
 <style scoped>

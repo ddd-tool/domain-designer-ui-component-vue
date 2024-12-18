@@ -15,7 +15,7 @@
     "verify": "vue-tsc -p ./tsconfig.app.json --composite false"
   },
   "dependencies": {
-    "@ddd-tool/domain-designer-core": "0.0.0-alpha.8",
+    "@ddd-tool/domain-designer-core": "0.0.0-alpha.10",
     "@primevue/themes": "^4.2.5",
     "nomnoml": "^1.7.0",
     "primeicons": "^7.0.0",
