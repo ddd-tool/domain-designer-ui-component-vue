@@ -10,11 +10,11 @@ export default `
 #.person: virtual=actor fill=#b6a2db title=bold
 
 //#bendSize: 0.3
-#padding: 8
+#padding: 4
 //#spacing: 40
 #edgeMargin: 0
 #lineWidth: 2.5
-#leading: 1.2
+#leading: 1.35
 //#zoom: 1
 #font: Times New Roman //consolas,Monaco
 #fontSize: 14

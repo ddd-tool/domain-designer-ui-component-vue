@@ -38,7 +38,7 @@ export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domS
       {
         const text = infoDoc.querySelector('text')!
         text.setAttribute('font-family', 'Monaco, consolas')
-        text.setAttribute('font-size', '0.95rem')
+        text.setAttribute('font-size', '0.99rem')
       }
 
       setTimeout(() => {
