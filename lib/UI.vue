@@ -17,8 +17,8 @@ import Fieldset from 'primevue/fieldset'
 import Popover from 'primevue/popover'
 import { computed, ref, watch } from 'vue'
 import { useI18nAgg } from './domain/i18n-agg'
-import type { DomainDesigner, DomainDesignInfo, DomainDesignInfoType } from '@ddd-tool/domain-designer-core'
-import { parseInfo } from './ui'
+import type { DomainDesigner } from '@ddd-tool/domain-designer-core'
+import { parseNode } from './ui'
 
 export type NonEmptyObject<T extends object> = keyof T extends never ? never : T
 interface Props {
@@ -31,44 +31,41 @@ const i18nAgg = useI18nAgg()
 const t = i18nAgg.commands.$t
 const diagramAgg = useDiagramAgg(props.designs)
 
-// =========================== Focus Info ===========================
+// =========================== Focus Node ===========================
 let focusInfoTask = '0'
-const infoDetailCollapsed = ref(diagramAgg.states.currentInfo.value === undefined)
-watch(infoDetailCollapsed, (v) => {
+const nodeDetailCollapsed = ref(diagramAgg.states.currentNode.value === undefined)
+watch(nodeDetailCollapsed, (v) => {
   if (v) {
-    diagramAgg.commands.setCurrentInfo(undefined)
+    diagramAgg.commands.setCurrentNode(undefined)
   }
 })
-const currentInfo = ref(diagramAgg.states.currentInfo.value)
-const infoDetailVisible = computed(() => currentInfo.value !== undefined)
-const infoDetail = computed(() => {
-  if (!currentInfo.value) {
-    return parseInfo(undefined)
+const currentNode = ref(diagramAgg.states.currentNode.value)
+const nodeDetailVisible = computed(() => currentNode.value !== undefined)
+const nodeDetail = computed(() => {
+  if (!currentNode.value) {
+    return parseNode(undefined)
   }
-  const info = diagramAgg.states.design.value?._getContext().getIdMap()[currentInfo.value] as DomainDesignInfo<
-    DomainDesignInfoType,
-    string
-  >
-  return parseInfo(info)
+  const node = diagramAgg.states.design.value?._getContext().getIdMap()[currentNode.value]
+  return parseNode(node)
 })
-diagramAgg.events.onFocusInfo.watchPublish(({ data, version }) => {
+diagramAgg.events.onFocusNode.watchPublish(({ data, version }) => {
   focusInfoTask = version
   if (data.id === undefined) {
-    if (!infoDetailVisible.value) {
+    if (!nodeDetailVisible.value) {
       return
     }
-    infoDetailCollapsed.value = true
+    nodeDetailCollapsed.value = true
     setTimeout(() => {
       if (focusInfoTask === version) {
-        currentInfo.value = data.id
+        currentNode.value = data.id
       }
     }, 500)
     return
   }
-  currentInfo.value = data.id
+  currentNode.value = data.id
   setTimeout(() => {
     if (focusInfoTask === version) {
-      infoDetailCollapsed.value = false
+      nodeDetailCollapsed.value = false
     }
   }, 0)
 })
@@ -260,22 +257,26 @@ function handleNoFocus() {
     <Nomnoml />
   </DragZoom>
   <Fieldset
-    v-show="infoDetailVisible"
-    v-model:collapsed="infoDetailCollapsed"
+    v-show="nodeDetailVisible"
+    v-model:collapsed="nodeDetailCollapsed"
     :toggleable="true"
     style="position: absolute; right: 1.5rem; top: 0; width: 30%"
-    :legend="infoDetail.name"
+    :legend="nodeDetail.name"
   >
-    <h2>{{ infoDetail.name }}</h2>
+    <h2>{{ nodeDetail.name }}: {{ nodeDetail.rule }}</h2>
     <Divider></Divider>
-    <h3>{{ t('constant.type') }}:</h3>
-    <p>{{ infoDetail.type }}</p>
-    <Divider></Divider>
-    <h3>{{ t('constant.subtype') }}:</h3>
-    <p>{{ infoDetail.subtype }}</p>
-    <Divider></Divider>
+    <template v-if="nodeDetail.type">
+      <h3>{{ t('constant.type') }}:</h3>
+      <p>{{ nodeDetail.type }}</p>
+    </template>
+    <template v-if="nodeDetail.subtype">
+      <Divider></Divider>
+      <h3>{{ t('constant.subtype') }}:</h3>
+      <p>{{ nodeDetail.subtype }}</p>
+      <Divider></Divider>
+    </template>
     <h3>{{ t('constant.description') }}:</h3>
-    <p>{{ infoDetail.desc }}</p>
+    <p>{{ nodeDetail.desc }}</p>
   </Fieldset>
   <Popover ref="op">
     <h3>缩放：</h3>

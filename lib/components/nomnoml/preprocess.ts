@@ -1,6 +1,6 @@
 import { isClassNodeLike, isNodeLike } from '#lib/domain/common'
 import { useDiagramAgg } from '#lib/domain/diagram-agg'
-import type { DomainDesignInfo, DomainDesignInfoType } from '@ddd-tool/domain-designer-core'
+import type { DomainDesignDesc, DomainDesignInfo, DomainDesignInfoType } from '@ddd-tool/domain-designer-core'
 
 export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domStr: string): HTMLElement {
   const parser = new DOMParser()
@@ -13,6 +13,8 @@ export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domS
     if (!isNodeLike(node)) {
       continue
     }
+
+    // =========================== common styles ============================
     const nodeDoc = svgDoc.querySelector(`[data-name="${node._attributes.__id}"]`)! as HTMLElement
     if (!nodeDoc) {
       continue
@@ -31,9 +33,20 @@ export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domS
     nodeTitle.onmouseout = () => {
       nodeTitle.parentElement!.classList.remove('highlight-node')
     }
+
+    // =========================== description ============================
+    if (node._attributes.description) {
+      const descDocs = nodeDoc.querySelectorAll(
+        `text[data-compartment="${node.inner ? Object.keys(node.inner).length + 1 : 1}"]`
+      ) as unknown as HTMLElement[]
+      handleDesc(diagramAgg, descDocs, node._attributes.description)
+    }
+
     if (!isClassNodeLike(node)) {
       continue
     }
+
+    // =========================== info ============================
     index = 0
     for (const key of Object.keys(node.inner)) {
       index++
@@ -59,9 +72,9 @@ export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domS
           console.debug('click target', tar)
           const needActive = !tar.classList.contains('active')
           if (needActive) {
-            diagramAgg.commands.setCurrentInfo(infoId)
+            diagramAgg.commands.setCurrentNode(infoId)
           } else {
-            diagramAgg.commands.setCurrentInfo(undefined)
+            diagramAgg.commands.setCurrentNode(undefined)
           }
           for (const el of document.body.querySelectorAll(`[data-id]`)) {
             if ((el as HTMLElement).dataset.id === infoId && needActive) {
@@ -85,4 +98,58 @@ export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domS
     return document.createElement('svg')
   }
   return svg as HTMLElement
+}
+
+function handleDesc(diagramAgg: ReturnType<typeof useDiagramAgg>, els: HTMLElement[], desc: DomainDesignDesc) {
+  if (!desc || !els) {
+    return ''
+  }
+  out: for (const i of desc._attributes.values) {
+    const name = i._attributes.name
+    const id = i._attributes.__id
+    for (const el of els) {
+      if (el.innerHTML.includes(`&lt;${name}&gt;`)) {
+        el.innerHTML = el.innerHTML.replace(`&lt;${name}&gt;`, `&lt;<tspan data-id="${id}">${name}</tspan>&gt;`)
+        continue out
+      } else {
+        continue
+      }
+    }
+  }
+  setTimeout(() => {
+    for (const i of desc._attributes.values) {
+      const id = i._attributes.__id
+      const descs = document.body.querySelectorAll(
+        `[data-compartment] [data-id="${id}"]`
+      ) as unknown as SVGTSpanElement[]
+      for (const desc of descs) {
+        if (desc.onmouseover) {
+          continue
+        }
+        desc.onclick = (evt: MouseEvent) => {
+          const tar = evt.target as HTMLElement
+          const needActive = !tar.classList.contains('active')
+          console.debug(tar)
+          if (needActive) {
+            diagramAgg.commands.setCurrentNode(id)
+          } else {
+            diagramAgg.commands.setCurrentNode(undefined)
+          }
+          for (const el of document.body.querySelectorAll(`[data-id]`)) {
+            if ((el as HTMLElement).dataset.id === id && needActive) {
+              el.classList.add('active')
+            } else {
+              el.classList.remove('active')
+            }
+          }
+        }
+        desc.onmouseover = () => {
+          desc.classList.add('highlight-desc')
+        }
+        desc.onmouseout = () => {
+          desc.classList.remove('highlight-desc')
+        }
+      }
+    }
+  })
 }

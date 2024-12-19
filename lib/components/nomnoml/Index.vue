@@ -25,7 +25,7 @@ function appendSvg() {
 }
 
 // ======================= focusOnInfo =======================
-diagramAgg.events.onFocusInfo.watchPublish(({ data }) => {
+diagramAgg.events.onFocusNode.watchPublish(({ data }) => {
   if (data.id === undefined) {
     for (const el of document.querySelectorAll('svg .active') as unknown as HTMLElement[]) {
       el.classList.remove('active')
@@ -172,11 +172,17 @@ diagramAgg.events.onDownloadSvg.watchPublish(() => {
   -webkit-animation: shining-info 0.6s alternate infinite;
   -moz-animation: shining-info 0.6s alternate infinite;
 }
+.nomnoml .highlight-desc:not(.active) {
+  animation: shining-info 0.6s alternate infinite;
+  -webkit-animation: shining-info 0.6s alternate infinite;
+  -moz-animation: shining-info 0.6s alternate infinite;
+}
 .nomnoml .highlight-node g:first-child {
   animation: shining-node 0.6s alternate infinite;
   -webkit-animation: shining-node 0.6s alternate infinite;
   -moz-animation: shining-node 0.6s alternate infinite;
 }
+.nomnoml .active,
 .nomnoml .active text {
   stroke-width: 1px;
   stroke-opacity: 0.8;

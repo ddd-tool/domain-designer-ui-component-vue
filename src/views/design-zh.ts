@@ -6,12 +6,20 @@ const d = createDomainDesigner()
 const 用户 = d.actor('用户', '下单用户')
 
 // 聚合
-const 用户账号 = d.info.valueObj('用户账号')
-const 订单号 = d.info.id('订单号')
+const 用户账号 = d.info.valueObj(
+  '用户账号',
+  d.desc`用户账号的数据来自于XXX，
+它包含了用户在本平台的各种权限数据以及主要增值服务的开通信息`
+)
+const 订单号 = d.info.id('订单号', d.desc`订单号为业务主键，仓储可以根据它查询出全局唯一的一个订单聚合`)
 const 下单时间 = d.info.valueObj('下单时间')
 const 商品价格 = d.info.valueObj('商品价格')
 const 商品数量 = d.info.valueObj('商品数量')
-const 订单金额 = d.info.func('订单金额', [商品价格, 商品数量])
+const 订单金额 = d.info.func(
+  '订单金额',
+  [商品价格, 商品数量],
+  d.desc`计算公式为【订单金额】= ${商品价格} x ${商品数量}`
+)
 const 订单聚合 = d.agg('订单聚合', [订单号, 下单时间, 用户账号, 商品价格, 商品数量, 订单金额], '这是订单聚合')
 
 // 命令
@@ -41,7 +49,12 @@ const 物流系统 = d.system('物流系统')
 const 邮件系统 = d.system('邮件系统')
 
 // 读模型
-const 订单详情 = d.readModel('订单详情读模型', [订单号, 下单时间])
+const 订单详情 = d.readModel(
+  '订单详情读模型',
+  [订单号, 下单时间],
+  d.desc`${自动扣款服务}
+`
+)
 
 const 创建订单失败流程 = d.startWorkflow('创建订单失败')
 用户.command(创建订单).agg(订单聚合).event(下单失败)

@@ -1,24 +1,64 @@
-import type { DomainDesignDesc, DomainDesignInfo, DomainDesignInfoType } from '@ddd-tool/domain-designer-core'
+import {
+  isDomainDesignInfo,
+  type DomainDesignDesc,
+  type DomainDesignInfo,
+  type DomainDesignInfoType,
+} from '@ddd-tool/domain-designer-core'
 import { useI18nAgg } from './domain/i18n-agg'
+import { isNodeLike } from './domain/common'
 
-export type InfoDetail = {
+export type NodeDetail = {
+  rule: string
   name: string
   type: string
-  subtype: string
+  subtype?: string
   desc: string
 }
 
 const t = useI18nAgg().commands.$t
 
-export function parseInfo(info?: DomainDesignInfo<DomainDesignInfoType, string>): InfoDetail {
-  if (!info) {
+export function parseNode(node?: object): NodeDetail {
+  if (!node || typeof node !== 'object') {
     return {
+      rule: 'Unknown',
       name: 'Unknown',
       type: 'Unknown',
       subtype: 'Unknown',
       desc: 'Unknown',
     }
   }
+
+  let detail: NodeDetail = {
+    rule: '',
+    name: '',
+    type: '',
+    subtype: '',
+    desc: '',
+  }
+  detail = parseInfo(node, detail)
+  detail = parseOthers(node, detail)
+  return detail
+}
+
+function parseOthers(node: object, detail: NodeDetail): NodeDetail {
+  if (detail.rule) {
+    return detail
+  }
+  if (isNodeLike(node)) {
+    detail.rule = node._attributes.rule
+    detail.name = node._attributes.name
+    detail.subtype = undefined
+    detail.desc = descriptionToCode(node._attributes.description)
+  }
+  return detail
+}
+
+function parseInfo(node: object, detail: NodeDetail): NodeDetail {
+  if (!isDomainDesignInfo(node)) {
+    return detail
+  }
+  const info = node as DomainDesignInfo<DomainDesignInfoType, string>
+
   const type = info._attributes.type
   let typeStr = ''
   let subtype: string[] = []
@@ -40,12 +80,12 @@ export function parseInfo(info?: DomainDesignInfo<DomainDesignInfoType, string>)
   if (subtype.length === 0) {
     subtype = [`<${t('constant.empty').value}>`]
   }
-  return {
-    name: info._attributes.name,
-    type: typeStr,
-    subtype: subtype.join(', '),
-    desc: descriptionToCode(info._attributes.description),
-  }
+  detail.rule = 'Info'
+  detail.name = info._attributes.name
+  detail.type = typeStr
+  detail.subtype = subtype.join(', ')
+  detail.desc = descriptionToCode(info._attributes.description)
+  return detail
 }
 
 function descriptionToCode(description?: DomainDesignDesc): string {

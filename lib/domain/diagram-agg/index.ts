@@ -92,9 +92,9 @@ function createAgg(data: Record<string, DomainDesigner>) {
       })
     }
 
-    // ======================== focus on info ========================
-    const currentInfo = ref<string | undefined>()
-    const onFocusInfo = createBroadcastEvent({ id: '' as string | undefined })
+    // ======================== focus on node ========================
+    const currentNode = ref<string | undefined>()
+    const onFocusNode = createBroadcastEvent({ id: '' as string | undefined })
 
     // ======================== export ========================
     const downloadEnabled = ref(true)
@@ -110,7 +110,7 @@ function createAgg(data: Record<string, DomainDesigner>) {
         currentWorkflow,
         currentStory,
         currentDesignKey,
-        currentInfo,
+        currentNode,
         downloadEnabled,
         displayReadModel,
         displaySystem,
@@ -129,8 +129,8 @@ function createAgg(data: Record<string, DomainDesigner>) {
         setDisplaySystem(b: boolean) {
           displaySystem.value = b
         },
-        setCurrentInfo(id: string | undefined) {
-          onFocusInfo.publish({ id })
+        setCurrentNode(id: string | undefined) {
+          onFocusNode.publish({ id })
         },
         switchDesign(key: string) {
           currentDesignKey.value = key
@@ -142,7 +142,7 @@ function createAgg(data: Record<string, DomainDesigner>) {
           return design.value._getContext().getIdMap()
         },
       },
-      events: { onFocusInfo, onFocusFlow, onDownloadSvg },
+      events: { onFocusNode, onFocusFlow, onDownloadSvg },
     }
   })
 }
