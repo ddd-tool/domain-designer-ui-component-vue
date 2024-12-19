@@ -285,12 +285,15 @@ function handleNoFocus() {
   </Popover>
 </template>
 
-<style scoped>
-.container {
-  width: auto;
-  height: auto;
+<style>
+.p-dock {
+  opacity: 0.4;
+  transition: 0.5s;
 }
-.focus-all-btn {
-  font-weight: bold;
+.p-dock:hover {
+  opacity: 1;
+}
+.p-dock .p-dock-item:hover {
+  scale: 1.1;
 }
 </style>

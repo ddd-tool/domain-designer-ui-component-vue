@@ -183,11 +183,4 @@ diagramAgg.events.onDownloadSvg.watchPublish(() => {
   stroke: #000;
   -webkit-text-stroke-color: #000;
 }
-.p-dock {
-  opacity: 0.4;
-  transition: 0.5s;
-}
-.p-dock:hover {
-  opacity: 1;
-}
 </style>
