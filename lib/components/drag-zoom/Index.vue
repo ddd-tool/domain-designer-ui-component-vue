@@ -7,6 +7,8 @@ const position = ref({ x: 0, y: 0 }) // 元素的位置
 const startDragPosition = ref({ x: 0, y: 0 }) // 鼠标开始拖动时的位置
 const startElementPosition = ref({ x: 0, y: 0 }) // 元素开始拖动时的位置
 
+const containerRef = ref<HTMLElement>()
+
 const cursor = ref('unset')
 const scale = ref(1) // 缩放比例，初始为 1
 const minScale = 0.5 // 最小缩放比例
@@ -77,18 +79,19 @@ const onWheel = (e: WheelEvent) => {
 onMounted(() => {
   window.addEventListener('keydown', onKeyDown)
   window.addEventListener('keyup', onKeyUp)
-  window.addEventListener('wheel', onWheel, { passive: false }) // 添加滚轮事件监听
+  containerRef.value?.addEventListener('wheel', onWheel, { passive: false }) // 添加滚轮事件监听
 })
 
 onUnmounted(() => {
   window.removeEventListener('keydown', onKeyDown)
   window.removeEventListener('keyup', onKeyUp)
-  window.removeEventListener('wheel', onWheel)
+  containerRef.value?.removeEventListener('wheel', onWheel)
 })
 </script>
 
 <template>
   <div
+    ref="containerRef"
     class="container"
     :style="{ cursor: cursor }"
     @mousedown="onMouseDown"
