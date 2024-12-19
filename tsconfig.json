@@ -19,8 +19,9 @@
     }
   ],
   "compilerOptions": {
-    "module": "ES2020",
+    "module": "ESNext",
     "moduleResolution": "bundler",
+    "target": "ES2017",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "skipLibCheck": false,
