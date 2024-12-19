@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Nomnoml from '#lib/components/nomnoml/Index.vue'
+import DragZoom from '#lib/components/drag-zoom/Index.vue'
 import { useDiagramAgg } from '#domain/diagram-agg'
 import Drawer from 'primevue/drawer'
 import Select from 'primevue/select'
@@ -12,8 +13,8 @@ import ToggleSwitch from 'primevue/toggleswitch'
 import SelectButton from 'primevue/selectbutton'
 import Divider from 'primevue/divider'
 import Dock from 'primevue/dock'
-import Slider from 'primevue/slider'
 import Fieldset from 'primevue/fieldset'
+import Popover from 'primevue/popover'
 import { computed, ref, watch } from 'vue'
 import { useI18nAgg } from './domain/i18n-agg'
 import type { DomainDesigner, DomainDesignInfo, DomainDesignInfoType } from '@ddd-tool/domain-designer-core'
@@ -72,6 +73,12 @@ diagramAgg.events.onFocusInfo.watchPublish(({ data, version }) => {
   }, 0)
 })
 
+// =========================== Help ===========================
+const op = ref()
+const toggle = (event: Event) => {
+  op.value.toggle(event)
+}
+
 // =========================== Settings ===========================
 const drawerVisible = ref(false)
 const drawerType = ref<'UserStories' | 'Settings' | undefined>(undefined)
@@ -102,10 +109,6 @@ const designKeyOptions = computed(() => {
     result.push({ label: key, value: key })
   }
   return result
-})
-const renderScale = ref(diagramAgg.states.renderScale.value)
-watch(renderScale, (v) => {
-  diagramAgg.commands.setRenderScale(v)
 })
 
 // =========================== User Stories ===========================
@@ -147,6 +150,13 @@ const dockItems = ref([
     command() {
       drawerType.value = 'Settings'
       drawerVisible.value = true
+    },
+  },
+  {
+    label: t('menu.help'),
+    icon: 'pi pi-question-circle',
+    command(e: any) {
+      toggle(e)
     },
   },
   {
@@ -219,9 +229,6 @@ function handleNoFocus() {
     :header="t('menu.settings').value"
     style="width: 40%"
   >
-    <label>缩放: {{ renderScale * 100 + '%' }}</label>
-    <Slider v-model="renderScale" :step="0.1" :min="0.5" :max="1"></Slider>
-    <Divider></Divider>
     <div>
       <ToggleSwitch v-model="displayReadModel" :true-value="true" :false-value="false" />
       <label> {{ t('menu.settings.renderReadModel') }} </label>
@@ -249,7 +256,9 @@ function handleNoFocus() {
       </div>
     </div>
   </Drawer>
-  <Nomnoml />
+  <DragZoom style="width: 100vw; height: 100vh">
+    <Nomnoml />
+  </DragZoom>
   <Fieldset
     v-show="infoDetailVisible"
     v-model:collapsed="infoDetailCollapsed"
@@ -268,6 +277,12 @@ function handleNoFocus() {
     <h3>{{ t('constant.description') }}:</h3>
     <p>{{ infoDetail.desc }}</p>
   </Fieldset>
+  <Popover ref="op">
+    <h3>缩放：</h3>
+    <p>滚动鼠标滚轮</p>
+    <h3>拖动画布：</h3>
+    <p>按下鼠标中键 或者 按住空格+鼠标左键</p>
+  </Popover>
 </template>
 
 <style scoped>

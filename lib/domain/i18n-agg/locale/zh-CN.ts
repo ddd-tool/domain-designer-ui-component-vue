@@ -18,6 +18,7 @@ const messages: I18nMessages = {
   'menu.settings.renderReadModel': '渲染读模型',
   'menu.settings.language': '语言',
   'menu.settings.dataSource': '数据源',
+  'menu.help': '帮助',
   'menu.exportSvg': '导出SVG',
   'menu.replayWorkflow': '重播工作流',
 }

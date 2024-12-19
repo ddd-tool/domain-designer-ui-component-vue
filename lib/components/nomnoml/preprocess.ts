@@ -19,12 +19,17 @@ export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domS
     }
     let index = 0
     for (const p of nodeDoc.querySelectorAll('path')) {
-      if (index === 0) {
-        p.setAttribute('stroke-width', '2')
-      } else {
+      if (index !== 0) {
         p.setAttribute('stroke-width', '1')
       }
       index++
+    }
+    const nodeTitle = nodeDoc.querySelector('[data-compartment="0"]')! as HTMLElement
+    nodeTitle.onmouseover = () => {
+      nodeTitle.parentElement!.classList.add('highlight-node')
+    }
+    nodeTitle.onmouseout = () => {
+      nodeTitle.parentElement!.classList.remove('highlight-node')
     }
     if (!isClassNodeLike(node)) {
       continue
@@ -44,8 +49,8 @@ export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domS
       setTimeout(() => {
         infoDoc.onmouseover = () => {
           for (const el of document.body.querySelectorAll(`[data-id="${infoId}"]`)) {
-            console.debug('highlight', (el as HTMLElement).dataset.id)
-            el.classList.add('highlight')
+            console.debug('highlight-info', (el as HTMLElement).dataset.id)
+            el.classList.add('highlight-info')
           }
         }
         infoDoc.onclick = (evt: MouseEvent) => {
@@ -68,7 +73,7 @@ export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domS
         }
         infoDoc.onmouseout = () => {
           for (const el of document.body.querySelectorAll(`[data-id="${infoId}"]`)) {
-            el.classList.remove('highlight')
+            el.classList.remove('highlight-info')
           }
         }
       })

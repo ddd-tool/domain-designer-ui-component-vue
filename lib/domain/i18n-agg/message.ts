@@ -16,6 +16,7 @@ export type I18nMessageKeys =
   | 'menu.settings.renderReadModel'
   | 'menu.settings.language'
   | 'menu.settings.dataSource'
+  | 'menu.help'
   | 'menu.exportSvg'
   | 'menu.replayWorkflow'
 export type I18nMessages = {

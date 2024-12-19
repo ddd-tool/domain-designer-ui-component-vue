@@ -100,9 +100,6 @@ function createAgg(data: Record<string, DomainDesigner>) {
     const downloadEnabled = ref(true)
     const onDownloadSvg = createBroadcastEvent({})
 
-    // ======================== settings ========================
-    const renderScale = ref(1)
-
     return {
       states: {
         design,
@@ -117,7 +114,6 @@ function createAgg(data: Record<string, DomainDesigner>) {
         downloadEnabled,
         displayReadModel,
         displaySystem,
-        renderScale,
       },
       commands: {
         focusFlow: focusFlow as FocusFlowFn,
@@ -132,9 +128,6 @@ function createAgg(data: Record<string, DomainDesigner>) {
         },
         setDisplaySystem(b: boolean) {
           displaySystem.value = b
-        },
-        setRenderScale(scale: number) {
-          renderScale.value = scale
         },
         setCurrentInfo(id: string | undefined) {
           onFocusInfo.publish({ id })

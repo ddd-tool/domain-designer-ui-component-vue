@@ -7,7 +7,7 @@ export default `
 #.system: fill=#eee8d5 title=bold
 #.event: visual=class fill=#ffcb81 title=bold
 #.policy: fill=#b6a2db title=bold
-#.person: virtual=actor fill=#b6a2db title=bold
+// #.actor: padding=10
 
 //#bendSize: 0.3
 #padding: 4

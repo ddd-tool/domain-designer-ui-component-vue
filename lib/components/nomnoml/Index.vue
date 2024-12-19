@@ -128,9 +128,7 @@ diagramAgg.events.onDownloadSvg.watchPublish(() => {
 </script>
 
 <template>
-  <div class="nomnoml">
-    <div ref="svgContainerRef" :style="{ scale: diagramAgg.states.renderScale.value }"></div>
-  </div>
+  <div class="nomnoml" ref="svgContainerRef"></div>
 </template>
 
 <style scoped>
@@ -143,7 +141,7 @@ diagramAgg.events.onDownloadSvg.watchPublish(() => {
 .nomnoml text {
   cursor: pointer;
 }
-@keyframes shining-hover {
+@keyframes shining-info {
   from {
     stroke-width: 1px;
     stroke-opacity: 0.2;
@@ -157,10 +155,27 @@ diagramAgg.events.onDownloadSvg.watchPublish(() => {
     -webkit-text-stroke-color: #000;
   }
 }
-.nomnoml .highlight:not(.active) text {
-  animation: shining-hover 0.6s alternate infinite;
-  -webkit-animation: shining-hover 0.6s alternate infinite;
-  -moz-animation: shining-hover 0.6s alternate infinite;
+@keyframes shining-node {
+  from {
+    stroke-opacity: 0.2;
+    stroke: #33322e;
+    -webkit-text-stroke-color: #33322e;
+  }
+  to {
+    stroke-opacity: 1;
+    stroke: #33322e;
+    -webkit-text-stroke-color: #33322e;
+  }
+}
+.nomnoml .highlight-info:not(.active) text {
+  animation: shining-info 0.6s alternate infinite;
+  -webkit-animation: shining-info 0.6s alternate infinite;
+  -moz-animation: shining-info 0.6s alternate infinite;
+}
+.nomnoml .highlight-node g:first-child {
+  animation: shining-node 0.6s alternate infinite;
+  -webkit-animation: shining-node 0.6s alternate infinite;
+  -moz-animation: shining-node 0.6s alternate infinite;
 }
 .nomnoml .active text {
   stroke-width: 1px;
