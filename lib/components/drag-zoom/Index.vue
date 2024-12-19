@@ -53,7 +53,7 @@ const onMouseMove = (e: MouseEvent) => {
 }
 
 // 鼠标松开事件
-const onMouseUp = (e: MouseEvent) => {
+const onMouseUp = (_: MouseEvent) => {
   if (isDragging.value) {
     isDragging.value = false
     cursor.value = isSpacePressed.value ? 'grab' : 'unset' // 根据空格键状态恢复鼠标样式
