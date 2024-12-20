@@ -11,7 +11,7 @@ export type NodeDetail = {
   rule: string
   name: string
   type: string
-  subtype?: string
+  relatedTypes?: string
   desc: string
 }
 
@@ -23,7 +23,7 @@ export function parseNode(node?: object): NodeDetail {
       rule: 'Unknown',
       name: 'Unknown',
       type: 'Unknown',
-      subtype: 'Unknown',
+      relatedTypes: 'Unknown',
       desc: 'Unknown',
     }
   }
@@ -32,7 +32,7 @@ export function parseNode(node?: object): NodeDetail {
     rule: '',
     name: '',
     type: '',
-    subtype: '',
+    relatedTypes: '',
     desc: '',
   }
   detail = parseInfo(node, detail)
@@ -47,7 +47,7 @@ function parseOthers(node: object, detail: NodeDetail): NodeDetail {
   if (isNodeLike(node)) {
     detail.rule = node._attributes.rule
     detail.name = node._attributes.name
-    detail.subtype = undefined
+    detail.relatedTypes = undefined
     detail.desc = descriptionToCode(node._attributes.description)
   }
   return detail
@@ -71,7 +71,6 @@ function parseInfo(node: object, detail: NodeDetail): NodeDetail {
     typeStr = t('constant.type.id').value
   } else if (type === 'ValueObject') {
     typeStr = t('constant.type.valueObject').value
-    subtype = (info as DomainDesignInfo<'Function', string>)._attributes.subtype.map((i) => i._attributes.name)
   } else if (type === 'Version') {
     typeStr = t('constant.type.version').value
   } else {
@@ -83,7 +82,7 @@ function parseInfo(node: object, detail: NodeDetail): NodeDetail {
   detail.rule = 'Info'
   detail.name = info._attributes.name
   detail.type = typeStr
-  detail.subtype = subtype.join(', ')
+  detail.relatedTypes = subtype.join(', ')
   detail.desc = descriptionToCode(info._attributes.description)
   return detail
 }
@@ -95,7 +94,7 @@ function descriptionToCode(description?: DomainDesignDesc): string {
   const templates = description._attributes.template
   const values = description._attributes.values
   return templates.reduce((result, str, i) => {
-    const value = values[i] ? `<${values[i]._attributes.name}>` : ''
+    const value = values[i] ? values[i].toFormat() : ''
     return result + str + value
   }, '')
 }

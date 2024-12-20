@@ -269,10 +269,10 @@ function handleNoFocus() {
       <h3>{{ t('constant.type') }}:</h3>
       <p>{{ nodeDetail.type }}</p>
     </template>
-    <template v-if="nodeDetail.subtype">
+    <template v-if="nodeDetail.relatedTypes">
       <Divider></Divider>
-      <h3>{{ t('constant.subtype') }}:</h3>
-      <p>{{ nodeDetail.subtype }}</p>
+      <h3>{{ t('constant.relatedTypes') }}:</h3>
+      <p>{{ nodeDetail.relatedTypes }}</p>
       <Divider></Divider>
     </template>
     <h3>{{ t('constant.description') }}:</h3>

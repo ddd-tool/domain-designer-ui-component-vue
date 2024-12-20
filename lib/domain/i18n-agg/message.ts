@@ -5,7 +5,7 @@ export type I18nMessageKeys =
   | 'constant.type.function'
   | 'constant.type.valueObject'
   | 'constant.type.version'
-  | 'constant.subtype'
+  | 'constant.relatedTypes'
   | 'constant.description'
   | 'constant.empty'
   | 'constant.others'

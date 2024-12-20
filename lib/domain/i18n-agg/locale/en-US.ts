@@ -7,7 +7,7 @@ const messages: I18nMessages = {
   'constant.type.function': 'Function',
   'constant.type.valueObject': 'Value Object',
   'constant.type.version': 'Versioning Attribute',
-  'constant.subtype': 'Subtype',
+  'constant.relatedTypes': 'Related Types',
   'constant.description': 'Description',
   'constant.empty': 'Empty',
   'constant.others': 'Others',
