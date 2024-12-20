@@ -95,21 +95,27 @@ function infosToCode<T extends Record<string, DomainDesignInfo<DomainDesignInfoT
   if (!infos) {
     return ''
   }
-  const PREFIX = '+'
+  function getFlag(desc: any): string {
+    if (desc) {
+      return '*'
+    }
+    return '-'
+  }
   const code = ['']
   for (const i in infos) {
     const info = infos[i]
     const type = info._attributes.type
+    const flag = getFlag(info._attributes.description)
     if (type === 'Document') {
-      code.push(`|${PREFIX} ${info._attributes.name}: Document`)
+      code.push(`|${flag} ${info._attributes.name}: Document`)
     } else if (type === 'Function') {
-      code.push(`|${PREFIX} ${info._attributes.name}: Function`)
+      code.push(`|${flag} ${info._attributes.name}: Function`)
     } else if (type === 'Id') {
-      code.push(`|${PREFIX} ${info._attributes.name}: Id`)
+      code.push(`|${flag} ${info._attributes.name}: Id`)
     } else if (type === 'ValueObject') {
-      code.push(`|${PREFIX} ${info._attributes.name}: Value`)
+      code.push(`|${flag} ${info._attributes.name}: Value`)
     } else if (type === 'Version') {
-      code.push(`|${PREFIX} ${info._attributes.name}: Version`)
+      code.push(`|${flag} ${info._attributes.name}: Version`)
     } else {
       isNever(type)
     }
