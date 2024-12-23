@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { throttle } from '#lib/common'
 import { ref, onMounted, onUnmounted } from 'vue'
 
 const isSpacePressed = ref(false) // 是否按下空格键
@@ -42,15 +43,19 @@ const onMouseDown = (e: MouseEvent) => {
   }
 }
 
+const move = throttle((x: number, y: number) => {
+  position.value = {
+    x,
+    y,
+  }
+}, 5)
+
 // 鼠标移动事件
 const onMouseMove = (e: MouseEvent) => {
   if (isDragging.value) {
     const deltaX = e.clientX - startDragPosition.value.x
     const deltaY = e.clientY - startDragPosition.value.y
-    position.value = {
-      x: startElementPosition.value.x + deltaX,
-      y: startElementPosition.value.y + deltaY,
-    }
+    move(startElementPosition.value.x + deltaX, startElementPosition.value.y + deltaY)
   }
 }
 

@@ -297,4 +297,7 @@ function handleNoFocus() {
 .p-dock .p-dock-item:hover {
   scale: 1.1;
 }
+.p-fieldset {
+  opacity: 0.9;
+}
 </style>
