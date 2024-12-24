@@ -276,7 +276,7 @@ function handleNoFocus() {
       <Divider></Divider>
     </template>
     <h3>{{ t('constant.description') }}:</h3>
-    <p>{{ nodeDetail.desc }}</p>
+    <p :class="nodeDetail.desc ? 'desc' : ''">{{ nodeDetail.desc ?? `<${t('constant.empty').value}>` }}</p>
   </Fieldset>
   <Popover ref="op">
     <h3>缩放：</h3>
@@ -299,5 +299,14 @@ function handleNoFocus() {
 }
 .p-fieldset {
   opacity: 0.9;
+}
+.p-fieldset .desc::before {
+  content: '';
+  display: inline-block;
+  height: 1rem;
+  width: 0.5rem;
+  border-radius: 0.25rem;
+  margin-right: 0.5rem;
+  background-color: #4441ff;
 }
 </style>

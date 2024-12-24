@@ -12,7 +12,7 @@ export type NodeDetail = {
   name: string
   type: string
   relatedTypes?: string
-  desc: string
+  desc?: string
 }
 
 const t = useI18nAgg().commands.$t
@@ -23,8 +23,8 @@ export function parseNode(node?: object): NodeDetail {
       rule: 'Unknown',
       name: 'Unknown',
       type: 'Unknown',
-      relatedTypes: 'Unknown',
-      desc: 'Unknown',
+      relatedTypes: undefined,
+      desc: undefined,
     }
   }
 
@@ -32,8 +32,8 @@ export function parseNode(node?: object): NodeDetail {
     rule: '',
     name: '',
     type: '',
-    relatedTypes: '',
-    desc: '',
+    relatedTypes: undefined,
+    desc: undefined,
   }
   detail = parseInfo(node, detail)
   detail = parseOthers(node, detail)
@@ -87,9 +87,9 @@ function parseInfo(node: object, detail: NodeDetail): NodeDetail {
   return detail
 }
 
-function descriptionToCode(description?: DomainDesignDesc): string {
+function descriptionToCode(description?: DomainDesignDesc): string | undefined {
   if (!description) {
-    return `<${t('constant.empty').value}>`
+    return undefined
   }
   const templates = description._attributes.template
   const values = description._attributes.values
