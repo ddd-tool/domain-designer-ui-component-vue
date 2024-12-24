@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { throttle } from '#lib/common'
+import { getOSType, throttle } from '#lib/common'
 import { ref, onMounted, onUnmounted } from 'vue'
 
 const isSpacePressed = ref(false) // 是否按下空格键
@@ -12,7 +12,7 @@ const containerRef = ref<HTMLElement>()
 
 const cursor = ref('unset')
 const scale = ref(1) // 缩放比例，初始为 1
-const minScale = 0.5 // 最小缩放比例
+const minScale = 0.3 // 最小缩放比例
 const maxScale = 3 // 最大缩放比例
 
 // 键盘事件监听
@@ -67,17 +67,43 @@ const onMouseUp = (_: MouseEvent) => {
   }
 }
 
-// 鼠标滚轮事件（缩放功能）
-const onWheel = (e: WheelEvent) => {
-  e.preventDefault() // 阻止页面默认滚动行为
-  const zoomSpeed = 0.1 // 缩放速度
-  if (e.deltaY < 0) {
+function computeZoom(e: WheelEvent, oldScale: number, zoomSpeed: number) {
+  const osType = getOSType()
+  const isZoomIn =
+    (e.deltaY < 0 && osType !== 'MacOS' && osType !== 'iOS') ||
+    (e.deltaY > 0 && (osType === 'MacOS' || osType === 'iOS'))
+  if (isZoomIn) {
     // 滚轮向上，放大
-    scale.value = Math.min(maxScale, scale.value + zoomSpeed)
+    return Math.min(maxScale, oldScale + zoomSpeed)
   } else {
     // 滚轮向下，缩小
-    scale.value = Math.max(minScale, scale.value - zoomSpeed)
+    return Math.max(minScale, oldScale - zoomSpeed)
   }
+}
+
+// 鼠标滚轮事件（缩放功能，基于鼠标中心缩放）
+const onWheel = (e: WheelEvent) => {
+  e.preventDefault() // 阻止页面默认滚动行为
+
+  if (!containerRef.value) return
+  const rect = containerRef.value.getBoundingClientRect()
+
+  // 鼠标相对于容器左上角的偏移量
+  const offsetX = e.clientX - rect.left
+  const offsetY = e.clientY - rect.top
+
+  const zoomSpeed = 0.1 // 缩放速度
+  const oldScale = scale.value
+  const newScale = computeZoom(e, oldScale, zoomSpeed)
+
+  // 计算缩放比例
+  const ratio = newScale / oldScale
+
+  // 调整 position，确保鼠标位置在缩放前后保持一致
+  position.value.x = position.value.x - (offsetX - position.value.x) * (ratio - 1)
+  position.value.y = position.value.y - (offsetY - position.value.y) * (ratio - 1)
+
+  scale.value = newScale
 }
 
 // 添加和移除事件监听
@@ -130,6 +156,6 @@ onUnmounted(() => {
   top: 0;
   left: 0;
   user-select: none;
-  transform-origin: center; /* 缩放以中心为基准 */
+  transform-origin: 0 0; /* 设置缩放原点为左上角 */
 }
 </style>
