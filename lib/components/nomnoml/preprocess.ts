@@ -1,6 +1,11 @@
-import { isClassNodeLike, isNodeLike } from '#lib/domain/common'
+import { isClassNodeLike, isNodeLike, type NodeLike } from '#lib/domain/common'
 import { useDiagramAgg } from '#lib/domain/diagram-agg'
-import type { DomainDesignDesc, DomainDesignInfo, DomainDesignInfoType } from '@ddd-tool/domain-designer-core'
+import {
+  isDomainDesignInfo,
+  type DomainDesignDesc,
+  type DomainDesignInfo,
+  type DomainDesignInfoType,
+} from '@ddd-tool/domain-designer-core'
 
 export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domStr: string): HTMLElement {
   const parser = new DOMParser()
@@ -27,11 +32,15 @@ export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domS
       index++
     }
     const nodeTitle = nodeDoc.querySelector('[data-compartment="0"]')! as HTMLElement
+    nodeTitle.parentElement!.classList.add('node')
     nodeTitle.onmouseover = () => {
       nodeTitle.parentElement!.classList.add('highlight-node')
     }
     nodeTitle.onmouseout = () => {
       nodeTitle.parentElement!.classList.remove('highlight-node')
+    }
+    nodeTitle.onclick = () => {
+      handleActive(diagramAgg, node)
     }
 
     // =========================== description ============================
@@ -50,7 +59,8 @@ export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domS
     index = 0
     for (const key of Object.keys(node.inner)) {
       index++
-      const infoId = (node.inner[key] as DomainDesignInfo<DomainDesignInfoType, string>)._attributes.__id
+      const info = node.inner[key] as DomainDesignInfo<DomainDesignInfoType, string>
+      const infoId = info._attributes.__id
       const infoDoc = nodeDoc.querySelector(`[data-compartment="${index}"]`)! as HTMLElement
       infoDoc.dataset.id = infoId
       {
@@ -66,23 +76,8 @@ export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domS
             el.classList.add('highlight-info')
           }
         }
-        infoDoc.onclick = (evt: MouseEvent) => {
-          evt.stopPropagation()
-          const tar = (evt.target as HTMLElement).parentNode!.parentNode! as HTMLElement
-          console.debug('click target', tar)
-          const needActive = !tar.classList.contains('active')
-          if (needActive) {
-            diagramAgg.commands.setCurrentNode(infoId)
-          } else {
-            diagramAgg.commands.setCurrentNode(undefined)
-          }
-          for (const el of document.body.querySelectorAll(`[data-id]`)) {
-            if ((el as HTMLElement).dataset.id === infoId && needActive) {
-              el.classList.add('active')
-            } else {
-              el.classList.remove('active')
-            }
-          }
+        infoDoc.onclick = () => {
+          handleActive(diagramAgg, info)
         }
         infoDoc.onmouseout = () => {
           for (const el of document.body.querySelectorAll(`[data-id="${infoId}"]`)) {
@@ -126,22 +121,8 @@ function handleDesc(diagramAgg: ReturnType<typeof useDiagramAgg>, els: HTMLEleme
         if (desc.onmouseover) {
           continue
         }
-        desc.onclick = (evt: MouseEvent) => {
-          const tar = evt.target as HTMLElement
-          const needActive = !tar.classList.contains('active')
-          console.debug(tar)
-          if (needActive) {
-            diagramAgg.commands.setCurrentNode(id)
-          } else {
-            diagramAgg.commands.setCurrentNode(undefined)
-          }
-          for (const el of document.body.querySelectorAll(`[data-id]`)) {
-            if ((el as HTMLElement).dataset.id === id && needActive) {
-              el.classList.add('active')
-            } else {
-              el.classList.remove('active')
-            }
-          }
+        desc.onclick = () => {
+          handleActive(diagramAgg, i)
         }
         desc.onmouseover = () => {
           desc.classList.add('highlight-desc')
@@ -152,4 +133,27 @@ function handleDesc(diagramAgg: ReturnType<typeof useDiagramAgg>, els: HTMLEleme
       }
     }
   })
+}
+
+function handleActive(diagramAgg: ReturnType<typeof useDiagramAgg>, node: NodeLike) {
+  const needActive = diagramAgg.states.currentNode.value !== node._attributes.__id
+  const isNode = !isDomainDesignInfo(node)
+
+  if (needActive) {
+    diagramAgg.commands.setCurrentNode(node._attributes.__id)
+    document.body.querySelectorAll(`[data-name].node`)?.forEach((el) => el.classList.remove('active'))
+    if (isNode) {
+      document.body.querySelector(`[data-name="${node._attributes.__id}"].node`)?.classList.add('active')
+    }
+  } else {
+    diagramAgg.commands.setCurrentNode(undefined)
+    document.body.querySelectorAll(`[data-name].node`)?.forEach((el) => el.classList.remove('active'))
+  }
+  for (const el of document.body.querySelectorAll(`[data-id]`)) {
+    if ((el as HTMLElement).dataset.id === node._attributes.__id && needActive) {
+      el.classList.add('active')
+    } else {
+      el.classList.remove('active')
+    }
+  }
 }

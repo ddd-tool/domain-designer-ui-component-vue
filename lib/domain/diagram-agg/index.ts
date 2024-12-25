@@ -130,6 +130,7 @@ function createAgg(data: Record<string, DomainDesigner>) {
           displaySystem.value = b
         },
         setCurrentNode(id: string | undefined) {
+          currentNode.value = id
           onFocusNode.publish({ id })
         },
         switchDesign(key: string) {

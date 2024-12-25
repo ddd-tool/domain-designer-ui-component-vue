@@ -260,7 +260,6 @@ function handleNoFocus() {
     v-show="nodeDetailVisible"
     v-model:collapsed="nodeDetailCollapsed"
     :toggleable="true"
-    style="position: absolute; right: 1.5rem; top: 0; width: 30%"
     :legend="nodeDetail.name"
   >
     <h2>{{ nodeDetail.name }}: {{ nodeDetail.rule }}</h2>
@@ -299,6 +298,11 @@ function handleNoFocus() {
 }
 .p-fieldset {
   opacity: 0.9;
+  white-space: pre-line;
+  position: absolute;
+  right: 4rem;
+  top: 0;
+  width: 30%;
 }
 .p-fieldset .desc::before {
   content: '';

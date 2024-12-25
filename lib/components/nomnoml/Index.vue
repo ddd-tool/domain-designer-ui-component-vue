@@ -177,16 +177,22 @@ diagramAgg.events.onDownloadSvg.watchPublish(() => {
   -webkit-animation: shining-info 0.6s alternate infinite;
   -moz-animation: shining-info 0.6s alternate infinite;
 }
-.nomnoml .highlight-node g:first-child {
+.nomnoml .highlight-node:not(.active) g:first-child {
   animation: shining-node 0.6s alternate infinite;
   -webkit-animation: shining-node 0.6s alternate infinite;
   -moz-animation: shining-node 0.6s alternate infinite;
 }
-.nomnoml .active,
-.nomnoml .active text {
+
+.nomnoml g[data-id].active text,
+.nomnoml tspan[data-id].active {
   stroke-width: 1px;
   stroke-opacity: 0.8;
   stroke: #000;
   -webkit-text-stroke-color: #000;
+}
+.nomnoml g.node.active {
+  animation: shining-node 0.6s alternate infinite;
+  -webkit-animation: shining-node 0.6s alternate infinite;
+  -moz-animation: shining-node 0.6s alternate infinite;
 }
 </style>
