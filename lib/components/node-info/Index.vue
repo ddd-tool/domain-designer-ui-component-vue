@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NodeLike } from '#lib/domain/common'
+import type { NodeLike } from '#lib/domain/common'
 
 interface Props {
   node: NodeLike

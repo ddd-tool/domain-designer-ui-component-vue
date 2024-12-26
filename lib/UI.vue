@@ -20,7 +20,7 @@ import { computed, ref, watch } from 'vue'
 import { useI18nAgg } from './domain/i18n-agg'
 import { checkDomainDesigner, checkStory, checkWorkflow, type DomainDesigner } from '@ddd-tool/domain-designer-core'
 import { parseNode } from './ui'
-import { NodeLike } from './domain/common'
+import type { NodeLike } from './domain/common'
 
 export type NonEmptyObject<T extends object> = keyof T extends never ? never : T
 interface Props {
