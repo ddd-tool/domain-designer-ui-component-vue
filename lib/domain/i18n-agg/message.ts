@@ -11,6 +11,7 @@ export type I18nMessageKeys =
   | 'constant.others'
   | 'menu.focusOnUserStory'
   | 'menu.focusOnUserStory.focusNothing'
+  | 'menu.completenessAssist'
   | 'menu.settings'
   | 'menu.settings.renderExternalSystem'
   | 'menu.settings.renderReadModel'

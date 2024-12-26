@@ -53,7 +53,7 @@ function startWorkflowAnimation(animationTask: number, nodes: readonly string[])
         }
       }, 100)
     }, t)
-    t += 500
+    t += diagramAgg.states.workflowPlayInterval.value
   }
 }
 diagramAgg.events.onFocusFlow.watchPublish(({ data }) => {

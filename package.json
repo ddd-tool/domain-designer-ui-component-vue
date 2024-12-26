@@ -15,12 +15,12 @@
     "verify": "vue-tsc -p ./tsconfig.app.json --composite false"
   },
   "dependencies": {
-    "@ddd-tool/domain-designer-core": "0.0.0-alpha.12",
+    "@ddd-tool/domain-designer-core": "0.0.0-alpha.16",
     "@primevue/themes": "^4.2.5",
     "nomnoml": "^1.7.0",
     "primeicons": "^7.0.0",
     "primevue": "^4.2.5",
-    "vue-fn": "0.0.3-aplha.35"
+    "vue-fn": "0.0.3-alpha.37"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
@@ -29,16 +29,17 @@
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.7.0",
-    "cypress": "^13.16.1",
+    "cypress": "^13.17.0",
     "jsdom": "^25.0.1",
-    "npm-run-all2": "^7.0.1",
+    "npm-run-all2": "^7.0.2",
     "read-pkg": "^9.0.1",
     "start-server-and-test": "^2.0.9",
     "typescript": "~5.6.3",
     "vite": "^5.4.11",
+    "vite-plugin-top-level-await": "^1.4.4",
     "vitest": "^2.1.8",
     "vue": "^3.5.13",
-    "vue-tsc": "^2.1.10"
+    "vue-tsc": "^2.2.0"
   },
   "packageManager": "pnpm@9.0.6+sha512.f6d863130973207cb7a336d6b439a242a26ac8068077df530d6a86069419853dc1ffe64029ec594a9c505a3a410d19643c870aba6776330f5cfddcf10a9c1617"
 }

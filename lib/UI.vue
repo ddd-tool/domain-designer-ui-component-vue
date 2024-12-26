@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Nomnoml from '#lib/components/nomnoml/Index.vue'
 import DragZoom from '#lib/components/drag-zoom/Index.vue'
-import { useDiagramAgg } from '#domain/diagram-agg'
+import { EMPTY_STORY, useDiagramAgg } from '#domain/diagram-agg'
 import Drawer from 'primevue/drawer'
 import Select from 'primevue/select'
 import Tabs from 'primevue/tabs'
@@ -15,10 +15,12 @@ import Divider from 'primevue/divider'
 import Dock from 'primevue/dock'
 import Fieldset from 'primevue/fieldset'
 import Popover from 'primevue/popover'
+import Slider from 'primevue/slider'
 import { computed, ref, watch } from 'vue'
 import { useI18nAgg } from './domain/i18n-agg'
-import type { DomainDesigner } from '@ddd-tool/domain-designer-core'
+import { checkDomainDesigner, checkStory, checkWorkflow, type DomainDesigner } from '@ddd-tool/domain-designer-core'
 import { parseNode } from './ui'
+import { NodeLike } from './domain/common'
 
 export type NonEmptyObject<T extends object> = keyof T extends never ? never : T
 interface Props {
@@ -70,6 +72,22 @@ diagramAgg.events.onFocusNode.watchPublish(({ data, version }) => {
   }, 0)
 })
 
+// =========================== Completeness Assist ===========================
+const checkResult = computed(() => {
+  if (currentWorkflow.value !== undefined) {
+    const r = checkWorkflow(diagramAgg.states.design.value!, currentWorkflow.value) || {}
+    console.log(r)
+    return r
+  } else if (currentStory.value !== EMPTY_STORY) {
+    return checkStory(diagramAgg.states.design.value!, currentStory.value) || {}
+  }
+  return checkDomainDesigner(diagramAgg.states.design.value!) || {}
+})
+function getNodeName(id: string): string {
+  const node = diagramAgg.states.design.value!._getContext().getIdMap()[id] as NodeLike
+  return node._attributes.name
+}
+
 // =========================== Help ===========================
 const op = ref()
 const toggle = (event: Event) => {
@@ -78,7 +96,11 @@ const toggle = (event: Event) => {
 
 // =========================== Settings ===========================
 const drawerVisible = ref(false)
-const drawerType = ref<'UserStories' | 'Settings' | undefined>(undefined)
+const drawerType = ref<'UserStories' | 'CompletenessAssist' | 'Settings' | undefined>(undefined)
+const workflowPlayInterval = ref(diagramAgg.states.workflowPlayInterval.value)
+watch(workflowPlayInterval, (v) => {
+  diagramAgg.commands.setWorkflowPlayInterval(v)
+})
 const displayReadModel = ref(diagramAgg.states.displayReadModel.value)
 watch(displayReadModel, (v) => {
   diagramAgg.commands.setDisplayReadModel(v)
@@ -109,12 +131,16 @@ const designKeyOptions = computed(() => {
 })
 
 // =========================== User Stories ===========================
-const currentStory = ref('Others')
+const currentStory = ref(EMPTY_STORY)
 const currentWorkflow = ref<undefined | string>()
 const userStoriesOptions = computed(() => {
   const result: { name: string; code: string }[] = []
   for (const story in diagramAgg.states.userStories.value) {
-    result.push({ name: story, code: story })
+    if (story === EMPTY_STORY) {
+      result.push({ name: `<${t('constant.empty').value}>`, code: EMPTY_STORY })
+    } else {
+      result.push({ name: story, code: story })
+    }
   }
   return result
 })
@@ -142,6 +168,14 @@ const dockItems = ref([
     },
   },
   {
+    label: t('menu.completenessAssist'),
+    icon: 'pi pi-info-circle',
+    command() {
+      drawerType.value = 'CompletenessAssist'
+      drawerVisible.value = true
+    },
+  },
+  {
     label: t('menu.settings'),
     icon: 'pi pi-cog',
     command() {
@@ -152,6 +186,7 @@ const dockItems = ref([
   {
     label: t('menu.help'),
     icon: 'pi pi-question-circle',
+    severity: 'help',
     command(e: any) {
       toggle(e)
     },
@@ -159,6 +194,7 @@ const dockItems = ref([
   {
     label: t('menu.exportSvg'),
     icon: 'pi pi-file-export',
+    severity: 'success',
     disabled: computed(() => !diagramAgg.states.downloadEnabled.value),
     command() {
       diagramAgg.commands.downloadSvg()
@@ -173,7 +209,7 @@ watch([currentStory, currentWorkflow], ([story, workflow]) => {
   diagramAgg.commands.focusFlow(workflow!, story)
 })
 function handleNoFocus() {
-  currentStory.value = 'Others'
+  currentStory.value = EMPTY_STORY
   currentWorkflow.value = undefined
 }
 </script>
@@ -184,7 +220,7 @@ function handleNoFocus() {
       <Button
         v-tooltip.left="item.label"
         :disabled="(item.disabled as boolean)"
-        :severity="item.disabled ? 'secondary' : 'info'"
+        :severity="item.severity ?? 'info'"
         :icon="item.icon"
         :src="item.icon"
         @click="(e: Event) => item.command!(e as any)"
@@ -199,6 +235,11 @@ function handleNoFocus() {
     :header="t('menu.focusOnUserStory').value"
     style="width: 40%"
   >
+    <div>
+      <p>工作流播放间隔：{{ workflowPlayInterval }} ms</p>
+      <Slider v-model="workflowPlayInterval" :step="50" :min="0" :max="500"></Slider>
+    </div>
+    <Divider></Divider>
     <Select
       v-model="currentStory"
       :options="userStoriesOptions"
@@ -218,6 +259,24 @@ function handleNoFocus() {
         </TabPanel>
       </TabPanels>
     </Tabs>
+  </Drawer>
+  <Drawer
+    v-model:visible="drawerVisible"
+    v-if="drawerType === 'CompletenessAssist'"
+    position="right"
+    :header="t('menu.completenessAssist').value"
+    style="width: 40%"
+  >
+    <template v-for="(key, i) in Object.keys(checkResult)" :key="i">
+      <Fieldset
+        v-if="checkResult[key].length"
+        :collapsed="Object.keys(checkResult).length < 5"
+        :toggleable="true"
+        :legend="`${getNodeName(key.split(',')[0])} -> ${getNodeName(key.split(',')[1])}`"
+      >
+        <p v-for="(p, j) in checkResult[key]" :key="j">{{ j + 1 }}.{{ p.message }}</p>
+      </Fieldset>
+    </template>
   </Drawer>
   <Drawer
     v-model:visible="drawerVisible"
@@ -257,6 +316,7 @@ function handleNoFocus() {
     <Nomnoml />
   </DragZoom>
   <Fieldset
+    class="root-fieldset"
     v-show="nodeDetailVisible"
     v-model:collapsed="nodeDetailCollapsed"
     :toggleable="true"
@@ -296,7 +356,7 @@ function handleNoFocus() {
 .p-dock .p-dock-item:hover {
   scale: 1.1;
 }
-.p-fieldset {
+.root-fieldset {
   opacity: 0.9;
   white-space: pre-line;
   position: absolute;
@@ -304,7 +364,7 @@ function handleNoFocus() {
   top: 0;
   width: 30%;
 }
-.p-fieldset .desc::before {
+.root-fieldset .desc::before {
   content: '';
   display: inline-block;
   height: 1rem;

@@ -13,6 +13,7 @@ const messages: I18nMessages = {
   'constant.others': '其他',
   'menu.focusOnUserStory': '聚焦用户故事',
   'menu.focusOnUserStory.focusNothing': '取消焦点',
+  'menu.completenessAssist': '完备性辅助',
   'menu.settings': '设置',
   'menu.settings.renderExternalSystem': '渲染外部系统',
   'menu.settings.renderReadModel': '渲染读模型',

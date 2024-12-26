@@ -8,6 +8,7 @@ interface FocusFlowFn {
   (workflow: undefined, userStory?: string): void
   (workflow: string, userStory: string): void
 }
+export const EMPTY_STORY = '__Empty__'
 
 function createAgg(data: Record<string, DomainDesigner>) {
   return createSingletonAgg(() => {
@@ -43,7 +44,7 @@ function createAgg(data: Record<string, DomainDesigner>) {
       }
       return code.join('\n')
     })
-    const currentStory = ref('Others')
+    const currentStory = ref(EMPTY_STORY)
     const currentWorkflow = ref<string | undefined>()
     const workflows = computed(() => {
       if (!design.value) {
@@ -53,7 +54,7 @@ function createAgg(data: Record<string, DomainDesigner>) {
     })
     const userStories = computed(() => {
       if (!design.value) {
-        return { Others: [] }
+        return { [EMPTY_STORY]: [] }
       }
 
       const result: Record<string, string[]> = {}
@@ -67,7 +68,7 @@ function createAgg(data: Record<string, DomainDesigner>) {
         }
         result[story] = values
       }
-      result['Others'] = workflowsTmp
+      result[EMPTY_STORY] = workflowsTmp
       return result
     })
 
@@ -92,6 +93,8 @@ function createAgg(data: Record<string, DomainDesigner>) {
       })
     }
 
+    const workflowPlayInterval = ref(300)
+
     // ======================== focus on node ========================
     const currentNode = ref<string | undefined>()
     const onFocusNode = createBroadcastEvent({ id: '' as string | undefined })
@@ -107,6 +110,7 @@ function createAgg(data: Record<string, DomainDesigner>) {
         code,
         userStories,
         workflows,
+        workflowPlayInterval,
         currentWorkflow,
         currentStory,
         currentDesignKey,
@@ -122,6 +126,11 @@ function createAgg(data: Record<string, DomainDesigner>) {
         },
         setDownloadEnabled(b: boolean) {
           downloadEnabled.value = b
+        },
+        setWorkflowPlayInterval(i: number) {
+          if (i >= 0) {
+            workflowPlayInterval.value = i
+          }
         },
         setDisplayReadModel(b: boolean) {
           displayReadModel.value = b

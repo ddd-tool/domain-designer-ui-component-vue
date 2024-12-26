@@ -13,6 +13,7 @@ const messages: I18nMessages = {
   'constant.others': 'Others',
   'menu.focusOnUserStory': 'Focus on User Story',
   'menu.focusOnUserStory.focusNothing': 'Focus Nothing',
+  'menu.completenessAssist': 'Completeness Assist',
   'menu.settings': 'Settings',
   'menu.settings.renderExternalSystem': 'Render `System`',
   'menu.settings.renderReadModel': 'Render `Read Model`',
