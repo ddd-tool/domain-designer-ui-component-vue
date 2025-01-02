@@ -57,15 +57,7 @@ function startWorkflowAnimation(animationTask: number, nodes: readonly string[])
   }
 }
 diagramAgg.events.onFocusFlow.watchPublish(({ data }) => {
-  const idMap = diagramAgg.commands.getIdMap() as Record<
-    string,
-    {
-      _attributes: {
-        __code: string
-        rule: string
-      }
-    }
-  >
+  const idMap = diagramAgg.commands.getIdMap()
   let items: readonly string[] = data.workflow === undefined ? [] : diagramAgg.states.workflows.value[data.workflow]
   items = items.filter((i) => {
     let b = true

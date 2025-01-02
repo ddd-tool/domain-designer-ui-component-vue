@@ -128,7 +128,7 @@ function descriptionToCode(description?: DomainDesignDesc): string {
     return ''
   }
   const templates = description._attributes.template
-  const values = description._attributes.values
+  const values = description._attributes.inject
   const code = templates.reduce((result, str, i) => {
     const value = values[i] ? values[i].toFormat() : ''
     return result + str + value

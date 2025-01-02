@@ -1,4 +1,9 @@
-import type { DomainDesignDesc, DomainDesignInfo, DomainDesignInfoType } from '@ddd-tool/domain-designer-core'
+import type {
+  DomainDesignDesc,
+  DomainDesignInfo,
+  DomainDesignObject,
+  DomainDesignInfoType,
+} from '@ddd-tool/domain-designer-core'
 
 export const RULES = Object.freeze(['Command', 'FacadeCommand', 'Event', 'Agg', 'ReadModel'] as const)
 export type ClassNodeLike = {
@@ -11,10 +16,10 @@ export type ClassNodeLike = {
 export function isClassNodeLike(node: any): node is ClassNodeLike {
   return typeof node.inner === 'object' && node._attributes && RULES.includes(node._attributes.rule)
 }
-export type NodeLike = {
-  _attributes: {
+export interface NodeLike extends DomainDesignObject {
+  readonly _attributes: {
     __id: string
-    rule: string
+    rule: (typeof RULES)[number]
     name: string
     description?: DomainDesignDesc
   }

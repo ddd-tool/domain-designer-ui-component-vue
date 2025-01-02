@@ -1,11 +1,6 @@
-import { isClassNodeLike, isNodeLike, type NodeLike } from '#lib/domain/common'
+import { isClassNodeLike, isNodeLike } from '#lib/domain/common'
 import { useDiagramAgg } from '#lib/domain/diagram-agg'
-import {
-  isDomainDesignInfo,
-  type DomainDesignDesc,
-  type DomainDesignInfo,
-  type DomainDesignInfoType,
-} from '@ddd-tool/domain-designer-core'
+import { isDomainDesignInfo, type DomainDesignDesc, type DomainDesignObject } from '@ddd-tool/domain-designer-core'
 
 export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domStr: string): HTMLElement {
   const parser = new DOMParser()
@@ -46,7 +41,9 @@ export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domS
     // =========================== description ============================
     if (node._attributes.description) {
       const descDocs = nodeDoc.querySelectorAll(
-        `text[data-compartment="${node.inner ? Object.keys(node.inner).length + 1 : 1}"]`
+        `text[data-compartment="${
+          (node as Record<string, any>).inner ? Object.keys((node as Record<string, any>).inner).length + 1 : 1
+        }"]`
       ) as unknown as HTMLElement[]
       handleDesc(diagramAgg, descDocs, node._attributes.description)
     }
@@ -59,7 +56,7 @@ export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domS
     index = 0
     for (const key of Object.keys(node.inner)) {
       index++
-      const info = node.inner[key] as DomainDesignInfo<DomainDesignInfoType, string>
+      const info = node.inner[key]
       const infoId = info._attributes.__id
       const infoDoc = nodeDoc.querySelector(`[data-compartment="${index}"]`)! as HTMLElement
       infoDoc.dataset.id = infoId
@@ -99,7 +96,7 @@ function handleDesc(diagramAgg: ReturnType<typeof useDiagramAgg>, els: HTMLEleme
   if (!desc || !els) {
     return ''
   }
-  out: for (const i of desc._attributes.values) {
+  out: for (const i of desc._attributes.inject) {
     const name = i._attributes.name
     const id = i._attributes.__id
     for (const el of els) {
@@ -112,7 +109,7 @@ function handleDesc(diagramAgg: ReturnType<typeof useDiagramAgg>, els: HTMLEleme
     }
   }
   setTimeout(() => {
-    for (const i of desc._attributes.values) {
+    for (const i of desc._attributes.inject) {
       const id = i._attributes.__id
       const descs = document.body.querySelectorAll(
         `[data-compartment] [data-id="${id}"]`
@@ -135,7 +132,7 @@ function handleDesc(diagramAgg: ReturnType<typeof useDiagramAgg>, els: HTMLEleme
   })
 }
 
-function handleActive(diagramAgg: ReturnType<typeof useDiagramAgg>, node: NodeLike) {
+function handleActive(diagramAgg: ReturnType<typeof useDiagramAgg>, node: DomainDesignObject) {
   const needActive = diagramAgg.states.currentNode.value !== node._attributes.__id
   const isNode = !isDomainDesignInfo(node)
 
