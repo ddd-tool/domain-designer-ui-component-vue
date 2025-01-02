@@ -23,7 +23,6 @@
     "vue-fn": "0.0.3-alpha.37"
   },
   "devDependencies": {
-    "@tsconfig/node22": "^22.0.0",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.10.2",
     "@vitejs/plugin-vue": "^5.2.1",
