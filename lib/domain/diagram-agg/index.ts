@@ -31,7 +31,7 @@ function createAgg(data: Record<string, DomainDesigner>) {
     const displayReadModel = ref(true)
     const displaySystem = ref(true)
     const code = computed(() => {
-      console.debug('generate code')
+      console.debug('generate nomnoml code')
       if (!design.value) {
         return ''
       }

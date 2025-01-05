@@ -1,6 +1,6 @@
 {
   "name": "@ddd-tool/domain-designer-ui-component",
-  "version": "0.0.0-alpha.16",
+  "version": "0.0.0-alpha.17",
   "private": true,
   "type": "module",
   "scripts": {
@@ -15,7 +15,7 @@
     "verify": "vue-tsc -p ./tsconfig.app.json --composite false"
   },
   "dependencies": {
-    "@ddd-tool/domain-designer-core": "0.0.0-alpha.20",
+    "@ddd-tool/domain-designer-core": "0.0.0-alpha.21",
     "@primevue/themes": "^4.2.5",
     "nomnoml": "^1.7.0",
     "primeicons": "^7.0.0",
