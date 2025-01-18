@@ -8,7 +8,7 @@ const messages: I18nMessages = {
   'constant.type.valueObject': '值对象',
   'constant.type.version': '版本属性',
   'constant.relatedTypes': '相关类型',
-  'constant.description': '描述',
+  'constant.note': '描述',
   'constant.empty': '无',
   'constant.others': '其他',
   'menu.focusOnUserStory': '聚焦用户故事',

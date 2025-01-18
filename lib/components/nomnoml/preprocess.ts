@@ -1,6 +1,6 @@
 import { isClassNodeLike, isNodeLike } from '#lib/domain/common'
 import { useDiagramAgg } from '#lib/domain/diagram-agg'
-import { isDomainDesignInfo, type DomainDesignDesc, type DomainDesignObject } from '@ddd-tool/domain-designer-core'
+import { isDomainDesignInfo, type DomainDesignNote, type DomainDesignObject } from '@ddd-tool/domain-designer-core'
 
 export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domStr: string): HTMLElement {
   const parser = new DOMParser()
@@ -38,14 +38,14 @@ export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domS
       handleActive(diagramAgg, node)
     }
 
-    // =========================== description ============================
-    if (node._attributes.description) {
-      const descDocs = nodeDoc.querySelectorAll(
+    // =========================== note ============================
+    if (node._attributes.note) {
+      const noteDocs = nodeDoc.querySelectorAll(
         `text[data-compartment="${
           (node as Record<string, any>).inner ? Object.keys((node as Record<string, any>).inner).length + 1 : 1
         }"]`
       ) as unknown as HTMLElement[]
-      handleDesc(diagramAgg, descDocs, node._attributes.description)
+      handleNote(diagramAgg, noteDocs, node._attributes.note)
     }
 
     if (!isClassNodeLike(node)) {
@@ -92,11 +92,11 @@ export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domS
   return svg as HTMLElement
 }
 
-function handleDesc(diagramAgg: ReturnType<typeof useDiagramAgg>, els: HTMLElement[], desc: DomainDesignDesc) {
-  if (!desc || !els) {
+function handleNote(diagramAgg: ReturnType<typeof useDiagramAgg>, els: HTMLElement[], note: DomainDesignNote) {
+  if (!note || !els) {
     return ''
   }
-  out: for (const i of desc._attributes.inject) {
+  out: for (const i of note._attributes.inject) {
     const name = i._attributes.name
     const id = i._attributes.__id
     for (const el of els) {
@@ -109,23 +109,23 @@ function handleDesc(diagramAgg: ReturnType<typeof useDiagramAgg>, els: HTMLEleme
     }
   }
   setTimeout(() => {
-    for (const i of desc._attributes.inject) {
+    for (const i of note._attributes.inject) {
       const id = i._attributes.__id
-      const descs = document.body.querySelectorAll(
+      const notes = document.body.querySelectorAll(
         `[data-compartment] [data-id="${id}"]`
       ) as unknown as SVGTSpanElement[]
-      for (const desc of descs) {
-        if (desc.onmouseover) {
+      for (const note of notes) {
+        if (note.onmouseover) {
           continue
         }
-        desc.onclick = () => {
+        note.onclick = () => {
           handleActive(diagramAgg, i)
         }
-        desc.onmouseover = () => {
-          desc.classList.add('highlight-desc')
+        note.onmouseover = () => {
+          note.classList.add('highlight-note')
         }
-        desc.onmouseout = () => {
-          desc.classList.remove('highlight-desc')
+        note.onmouseout = () => {
+          note.classList.remove('highlight-note')
         }
       }
     }

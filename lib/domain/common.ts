@@ -1,5 +1,5 @@
 import type {
-  DomainDesignDesc,
+  DomainDesignNote,
   DomainDesignInfo,
   DomainDesignObject,
   DomainDesignInfoType,
@@ -21,7 +21,7 @@ export interface NodeLike extends DomainDesignObject {
     __id: string
     rule: (typeof RULES)[number]
     name: string
-    description?: DomainDesignDesc
+    note?: DomainDesignNote
   }
   inner?: Record<string, any>
 }

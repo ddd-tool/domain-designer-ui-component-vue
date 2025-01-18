@@ -6,7 +6,7 @@ export type I18nMessageKeys =
   | 'constant.type.valueObject'
   | 'constant.type.version'
   | 'constant.relatedTypes'
-  | 'constant.description'
+  | 'constant.note'
   | 'constant.empty'
   | 'constant.others'
   | 'menu.focusOnUserStory'

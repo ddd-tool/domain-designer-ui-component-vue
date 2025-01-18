@@ -164,7 +164,7 @@ diagramAgg.events.onDownloadSvg.watchPublish(() => {
   -webkit-animation: shining-info 0.6s alternate infinite;
   -moz-animation: shining-info 0.6s alternate infinite;
 }
-.nomnoml .highlight-desc:not(.active) {
+.nomnoml .highlight-note:not(.active) {
   animation: shining-info 0.6s alternate infinite;
   -webkit-animation: shining-info 0.6s alternate infinite;
   -moz-animation: shining-info 0.6s alternate infinite;

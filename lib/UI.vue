@@ -335,8 +335,8 @@ function handleNoFocus() {
       <p>{{ nodeDetail.relatedTypes }}</p>
       <Divider></Divider>
     </template>
-    <h3>{{ t('constant.description') }}:</h3>
-    <p :class="nodeDetail.desc ? 'desc' : ''">{{ nodeDetail.desc ?? `<${t('constant.empty').value}>` }}</p>
+    <h3>{{ t('constant.note') }}:</h3>
+    <p :class="nodeDetail.note ? 'note' : ''">{{ nodeDetail.note ?? `<${t('constant.empty').value}>` }}</p>
   </Fieldset>
   <Popover ref="op">
     <h3>缩放：</h3>
@@ -365,7 +365,7 @@ function handleNoFocus() {
   top: 0;
   width: 30%;
 }
-.root-fieldset .desc::before {
+.root-fieldset .note::before {
   content: '';
   display: inline-block;
   height: 1rem;

@@ -1,6 +1,6 @@
 import type {
   DomainDesignAgg,
-  DomainDesignDesc,
+  DomainDesignNote,
   DomainDesigner,
   DomainDesignInfo,
   DomainDesignInfoType,
@@ -16,44 +16,42 @@ export function* nomnomlCodeGenerator<T extends DomainDesigner>(
     const agg: DomainDesignAgg<any> = context.getAggs()[i]
     yield `[<aggregation id=${agg._attributes.__id}> ${agg._attributes.name}: Aggregation ${infosToCode(
       agg._attributes.infos
-    )} ${descriptionToCode(agg._attributes.description)}]`
+    )} ${noteToCode(agg._attributes.note)}]`
   }
   for (const i in context.getCommands()) {
     const command = context.getCommands()[i]
     yield `[<command id=${command._attributes.__id}> ${command._attributes.name}: Command ${infosToCode(
       command._attributes.infos
-    )} ${descriptionToCode(command._attributes.description)}]`
+    )} ${noteToCode(command._attributes.note)}]`
   }
   for (const i in context.getFacadeCommands()) {
     const facadeCommand = context.getFacadeCommands()[i]
     yield `[<facadeCommand id=${facadeCommand._attributes.__id}> ${
       facadeCommand._attributes.name
-    }: FacadeCommand ${infosToCode(facadeCommand._attributes.infos)} ${descriptionToCode(
-      facadeCommand._attributes.description
-    )}]`
+    }: FacadeCommand ${infosToCode(facadeCommand._attributes.infos)} ${noteToCode(facadeCommand._attributes.note)}]`
   }
   for (const i in context.getEvents()) {
     const event = context.getEvents()[i]
     yield `[<event id=${event._attributes.__id}> ${event._attributes.name}: Event ${infosToCode(
       event._attributes.infos
-    )} ${descriptionToCode(event._attributes.description)}]`
+    )} ${noteToCode(event._attributes.note)}]`
   }
   for (const i in context.getServices()) {
     const service = context.getServices()[i]
-    yield `[<service id=${service._attributes.__id}> ${service._attributes.name}: Service ${descriptionToCode(
-      service._attributes.description
+    yield `[<service id=${service._attributes.__id}> ${service._attributes.name}: Service ${noteToCode(
+      service._attributes.note
     )}]`
   }
   for (const i in context.getActors()) {
     const actor = context.getActors()[i]
-    yield `[<actor id=${actor._attributes.__id}> ${actor._attributes.name}: Actor ${descriptionToCode(
-      actor._attributes.description
+    yield `[<actor id=${actor._attributes.__id}> ${actor._attributes.name}: Actor ${noteToCode(
+      actor._attributes.note
     )}]`
   }
   for (const i in context.getPolicies()) {
     const policy = context.getPolicies()[i]
-    yield `[<policy id=${policy._attributes.__id}> ${policy._attributes.name}: Policy ${descriptionToCode(
-      policy._attributes.description
+    yield `[<policy id=${policy._attributes.__id}> ${policy._attributes.name}: Policy ${noteToCode(
+      policy._attributes.note
     )}]`
   }
   if (displayReadModel) {
@@ -61,14 +59,14 @@ export function* nomnomlCodeGenerator<T extends DomainDesigner>(
       const readModel = context.getReadModels()[i]
       yield `[<readModel id=${readModel._attributes.__id}> ${readModel._attributes.name}: ReadModel ${infosToCode(
         readModel._attributes.infos
-      )} ${descriptionToCode(readModel._attributes.description)}]`
+      )} ${noteToCode(readModel._attributes.note)}]`
     }
   }
   if (displaySystem) {
     for (const i in context.getSystems()) {
       const system = context.getSystems()[i]
-      yield `[<system id=${system._attributes.__id}> ${system._attributes.name}: System ${descriptionToCode(
-        system._attributes.description
+      yield `[<system id=${system._attributes.__id}> ${system._attributes.name}: System ${noteToCode(
+        system._attributes.note
       )}]`
     }
   }
@@ -95,8 +93,8 @@ function infosToCode<T extends Record<string, DomainDesignInfo<DomainDesignInfoT
   if (!infos) {
     return ''
   }
-  function getFlag(desc: any): string {
-    if (desc) {
+  function getFlag(note: any): string {
+    if (note) {
       return '*'
     }
     return '-'
@@ -105,7 +103,7 @@ function infosToCode<T extends Record<string, DomainDesignInfo<DomainDesignInfoT
   for (const i in infos) {
     const info = infos[i]
     const type = info._attributes.type
-    const flag = getFlag(info._attributes.description)
+    const flag = getFlag(info._attributes.note)
     if (type === 'Document') {
       code.push(`|${flag} ${info._attributes.name}: Document`)
     } else if (type === 'Function') {
@@ -123,12 +121,12 @@ function infosToCode<T extends Record<string, DomainDesignInfo<DomainDesignInfoT
   return code.join('\n')
 }
 
-function descriptionToCode(description?: DomainDesignDesc): string {
-  if (!description) {
+function noteToCode(note?: DomainDesignNote): string {
+  if (!note) {
     return ''
   }
-  const templates = description._attributes.template
-  const values = description._attributes.inject
+  const templates = note._attributes.template
+  const values = note._attributes.inject
   const code = templates.reduce((result, str, i) => {
     const value = values[i] ? values[i].toFormat() : ''
     return result + str + value

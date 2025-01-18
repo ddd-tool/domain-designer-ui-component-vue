@@ -1,6 +1,6 @@
 import {
   isDomainDesignInfo,
-  type DomainDesignDesc,
+  type DomainDesignNote,
   type DomainDesignInfo,
   type DomainDesignInfoType,
 } from '@ddd-tool/domain-designer-core'
@@ -12,7 +12,7 @@ export type NodeDetail = {
   name: string
   type: string
   relatedTypes?: string
-  desc?: string
+  note?: string
 }
 
 const t = useI18nAgg().commands.$t
@@ -24,7 +24,7 @@ export function parseNode(node?: object): NodeDetail {
       name: 'Unknown',
       type: 'Unknown',
       relatedTypes: undefined,
-      desc: undefined,
+      note: undefined,
     }
   }
 
@@ -33,7 +33,7 @@ export function parseNode(node?: object): NodeDetail {
     name: '',
     type: '',
     relatedTypes: undefined,
-    desc: undefined,
+    note: undefined,
   }
   detail = parseInfo(node, detail)
   detail = parseOthers(node, detail)
@@ -48,7 +48,7 @@ function parseOthers(node: object, detail: NodeDetail): NodeDetail {
     detail.rule = node._attributes.rule
     detail.name = node._attributes.name
     detail.relatedTypes = undefined
-    detail.desc = descriptionToCode(node._attributes.description)
+    detail.note = noteToCode(node._attributes.note)
   }
   return detail
 }
@@ -83,16 +83,16 @@ function parseInfo(node: object, detail: NodeDetail): NodeDetail {
   detail.name = info._attributes.name
   detail.type = typeStr
   detail.relatedTypes = subtype.join(', ')
-  detail.desc = descriptionToCode(info._attributes.description)
+  detail.note = noteToCode(info._attributes.note)
   return detail
 }
 
-function descriptionToCode(description?: DomainDesignDesc): string | undefined {
-  if (!description) {
+function noteToCode(note?: DomainDesignNote): string | undefined {
+  if (!note) {
     return undefined
   }
-  const templates = description._attributes.template
-  const values = description._attributes.inject
+  const templates = note._attributes.template
+  const values = note._attributes.inject
   return templates.reduce((result, str, i) => {
     const value = values[i] ? values[i].toFormat() : ''
     return result + str + value
