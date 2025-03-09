@@ -1,6 +1,6 @@
 {
   "name": "@ddd-tool/domain-designer-ui-component",
-  "version": "0.0.0-alpha.19",
+  "version": "0.1.0-beta.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -15,16 +15,16 @@
     "verify": "vue-tsc -p ./tsconfig.app.json --composite false"
   },
   "dependencies": {
-    "@ddd-tool/domain-designer-core": "0.0.0-alpha.31",
-    "@primevue/themes": "^4.2.5",
+    "@ddd-tool/domain-designer-core": "0.1.0-beta.1",
+    "@primeuix/themes": "^1.0.0",
     "nomnoml": "^1.7.0",
     "primeicons": "^7.0.0",
-    "primevue": "^4.2.5",
+    "primevue": "^4.3.1",
     "vue-fn": "0.0.3-alpha.37"
   },
   "devDependencies": {
     "@types/jsdom": "^21.1.7",
-    "@types/node": "^22.10.2",
+    "@types/node": "^22.13.10",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.7.0",
@@ -32,13 +32,13 @@
     "jsdom": "^25.0.1",
     "npm-run-all2": "^7.0.2",
     "read-pkg": "^9.0.1",
-    "start-server-and-test": "^2.0.9",
+    "start-server-and-test": "^2.0.10",
     "typescript": "~5.6.3",
-    "vite": "^5.4.11",
-    "vite-plugin-top-level-await": "^1.4.4",
-    "vitest": "^2.1.8",
+    "vite": "^5.4.14",
+    "vite-plugin-top-level-await": "^1.5.0",
+    "vitest": "^2.1.9",
     "vue": "^3.5.13",
-    "vue-tsc": "^2.2.0"
+    "vue-tsc": "^2.2.8"
   },
-  "packageManager": "pnpm@9.0.6+sha512.f6d863130973207cb7a336d6b439a242a26ac8068077df530d6a86069419853dc1ffe64029ec594a9c505a3a410d19643c870aba6776330f5cfddcf10a9c1617"
+  "packageManager": "pnpm@9.14.4+sha512.c8180b3fbe4e4bca02c94234717896b5529740a6cbadf19fa78254270403ea2f27d4e1d46a08a0f56c89b63dc8ebfd3ee53326da720273794e6200fcf0d184ab"
 }

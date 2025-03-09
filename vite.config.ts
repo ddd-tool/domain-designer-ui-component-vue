@@ -15,6 +15,14 @@ export default defineConfig({
       promiseImportName: (i) => `__tla_${i}`,
     }),
   ],
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'esnext',
+    },
+  },
+  esbuild: {
+    drop: ['console', 'debugger'], // 移除 console 和 debugger 语句
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -34,12 +42,12 @@ export default defineConfig({
       formats: ['es'],
     },
     rollupOptions: {
-      external: ['vue', 'primevue', '@primevue/themes'],
+      external: ['vue', 'primevue', '@primeuix/themes'],
       output: {
         globals: {
           vue: '__Vue',
           primevue: '__PrimeVue',
-          '@primevue/themes': '__PrimeVueThemes',
+          '@primeuix/themes': '__PrimeVueThemes',
         },
       },
     },
