@@ -5,7 +5,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import PrimeVue from 'primevue/config'
 import Tooltip from 'primevue/tooltip'
-import Aura from '@primevue/themes/aura'
+import Aura from '@primeuix/themes/aura'
 
 const app = createApp(App)
 

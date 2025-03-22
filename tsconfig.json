@@ -5,7 +5,7 @@
     "lib/*",
     "lib/**/*",
     "src/*",
-    "src/**/*",
+    "src/**/*"
   ],
   "exclude": [
     "src/**/__tests__/*"
@@ -19,13 +19,12 @@
     }
   ],
   "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "target": "ES2017",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "skipLibCheck": false,
     "strict": true,
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "target": "ESNext",
+    "esModuleInterop": true,
+    "sourceMap": true,
     "types": [
       "node",
       "vite/client"
@@ -39,7 +38,10 @@
       ],
       "#domain/*": [
         "./lib/domain/*"
+      ],
+      "@ddd-tool/domain-designer-core": [
+        "./node_modules/@ddd-tool/domain-designer-core"
       ]
-    },
+    }
   }
 }
