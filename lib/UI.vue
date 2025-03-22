@@ -234,10 +234,10 @@ function handleNoFocus() {
     v-if="drawerType === 'UserStories'"
     position="right"
     :header="t('menu.focusOnUserStory').value"
-    style="width: 40%"
+    class="toolbar-drawer"
   >
     <div>
-      <p>工作流播放间隔：{{ workflowPlayInterval }} ms</p>
+      <p>{{ t('menu.focusOnUserStory.animationDuration') }}：{{ workflowPlayInterval }} ms</p>
       <Slider v-model="workflowPlayInterval" :step="50" :min="0" :max="500"></Slider>
     </div>
     <Divider></Divider>
@@ -266,7 +266,7 @@ function handleNoFocus() {
     v-if="drawerType === 'CompletenessAssist'"
     position="right"
     :header="t('menu.completenessAssist').value"
-    style="width: 40%"
+    class="toolbar-drawer"
   >
     <template v-for="(key, i) in Object.keys(checkResult)" :key="i">
       <Fieldset
@@ -284,7 +284,7 @@ function handleNoFocus() {
     v-if="drawerType === 'Settings'"
     position="right"
     :header="t('menu.settings').value"
-    style="width: 40%"
+    class="toolbar-drawer"
   >
     <div>
       <ToggleSwitch v-model="displayReadModel" :true-value="true" :false-value="false" />
@@ -305,9 +305,9 @@ function handleNoFocus() {
       ></SelectButton>
     </div>
     <Divider></Divider>
-    <div>
-      <label> {{ t('menu.settings.dataSource') }} </label>
-      <div v-for="(item, index) in designKeyOptions" :key="index">
+    <div class="datasource">
+      <h3>{{ t('menu.settings.dataSource') }}</h3>
+      <div v-for="(item, index) in designKeyOptions" :key="index" class="datasource-item">
         <RadioButton v-model="currentDesignKey" :input-id="item.value" :value="item.value"></RadioButton>
         <label :for="item.value"> {{ item.label }} </label>
       </div>
@@ -339,10 +339,10 @@ function handleNoFocus() {
     <p :class="nodeDetail.note ? 'note' : ''">{{ nodeDetail.note ?? `<${t('constant.empty').value}>` }}</p>
   </Fieldset>
   <Popover ref="op">
-    <h3>缩放：</h3>
-    <p>滚动鼠标滚轮</p>
-    <h3>拖动画布：</h3>
-    <p>按下鼠标中键 或者 按住空格+鼠标左键</p>
+    <h3>{{ t('menu.help.zoom') }}</h3>
+    <p>{{ t('menu.help.zoom.content') }}</p>
+    <h3>{{ t('menu.help.drag') }}</h3>
+    <p>{{ t('menu.help.drag.content') }}</p>
   </Popover>
 </template>
 
@@ -356,6 +356,28 @@ function handleNoFocus() {
 }
 .p-dock .p-dock-item:hover {
   scale: 1.1;
+}
+.toolbar-drawer {
+  width: 40%;
+}
+.toolbar-drawer .datasource {
+  font-weight: bold;
+}
+.toolbar-drawer .datasource .datasource-item {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  grid-template-rows: 1fr;
+  margin: 5px 0;
+  line-height: 1.5rem;
+  font-size: 1rem;
+  border-radius: 5px;
+}
+.toolbar-drawer .datasource .datasource-item :hover {
+  cursor: pointer;
+  background-image: linear-gradient(to bottom, white, rgb(228, 250, 255), white);
+}
+.toolbar-drawer .datasource .datasource-item label {
+  padding-left: 5px;
 }
 .root-fieldset {
   opacity: 0.9;

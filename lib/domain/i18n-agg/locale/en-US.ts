@@ -11,8 +11,10 @@ const messages: I18nMessages = {
   'constant.note': 'Note',
   'constant.empty': 'Empty',
   'constant.others': 'Others',
+  'menu.replayWorkflow': 'Replay Workflow',
   'menu.focusOnUserStory': 'Focus on User Story',
   'menu.focusOnUserStory.focusNothing': 'Focus Nothing',
+  'menu.focusOnUserStory.animationDuration': 'Animation Duration',
   'menu.completenessAssist': 'Completeness Assist',
   'menu.settings': 'Settings',
   'menu.settings.renderExternalSystem': 'Render `System`',
@@ -20,8 +22,11 @@ const messages: I18nMessages = {
   'menu.settings.language': 'Language',
   'menu.settings.dataSource': 'Data Source',
   'menu.help': 'Help',
+  'menu.help.zoom': 'Zoom:',
+  'menu.help.zoom.content': 'Scoll mouse wheel',
+  'menu.help.drag': 'Drag:',
+  'menu.help.drag.content': 'Press middle mouse button or press space + left mouse button',
   'menu.exportSvg': 'Export SVG',
-  'menu.replayWorkflow': 'Replay Workflow',
 }
 
 export default messages

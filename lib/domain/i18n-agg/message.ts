@@ -9,8 +9,10 @@ export type I18nMessageKeys =
   | 'constant.note'
   | 'constant.empty'
   | 'constant.others'
+  | 'menu.replayWorkflow'
   | 'menu.focusOnUserStory'
   | 'menu.focusOnUserStory.focusNothing'
+  | 'menu.focusOnUserStory.animationDuration'
   | 'menu.completenessAssist'
   | 'menu.settings'
   | 'menu.settings.renderExternalSystem'
@@ -18,8 +20,12 @@ export type I18nMessageKeys =
   | 'menu.settings.language'
   | 'menu.settings.dataSource'
   | 'menu.help'
+  | 'menu.help.zoom'
+  | 'menu.help.zoom.content'
+  | 'menu.help.drag'
+  | 'menu.help.drag.content'
   | 'menu.exportSvg'
-  | 'menu.replayWorkflow'
+
 export type I18nMessages = {
   [key in I18nMessageKeys]: string
 }

@@ -18,7 +18,11 @@ const maxScale = 3 // 最大缩放比例
 // 键盘事件监听
 const onKeyDown = (e: KeyboardEvent) => {
   if (e.code === 'Space') {
-    cursor.value = 'grab'
+    if (isDragging.value) {
+      cursor.value = 'grabbing'
+    } else {
+      cursor.value = 'grab'
+    }
     e.preventDefault() // 阻止页面滚动
     isSpacePressed.value = true
   }
@@ -146,7 +150,7 @@ onUnmounted(() => {
 .container {
   width: 100vw;
   height: 100vh;
-  background-color: #f0f0f0;
+  background-color: #efefef;
   overflow: hidden;
   position: relative;
 }
