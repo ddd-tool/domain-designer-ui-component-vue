@@ -2,17 +2,26 @@ import { fileURLToPath, URL } from 'url'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import topLevelAwait from 'vite-plugin-top-level-await'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    topLevelAwait({
+      // The export name of top-level await promise for each chunk module
+      promiseExportName: '__tla',
+      // The function to generate import names of top-level await promise in each chunk module
+      promiseImportName: (i) => `__tla_${i}`,
+    }),
+  ],
   optimizeDeps: {
     esbuildOptions: {
-      target: 'esnext',
+      target: 'es2017',
     },
   },
   esbuild: {
-    drop: ['console', 'debugger'], // 移除 console 和 debugger 语句
+    drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [], // 移除 console 和 debugger 语句
   },
   resolve: {
     alias: {
@@ -22,9 +31,10 @@ export default defineConfig({
     },
   },
   build: {
-    minify: 'esbuild',
+    // minify: 'esbuild',
+    minify: false,
     outDir: 'dist',
-    target: 'esnext',
+    target: 'es2017',
     cssCodeSplit: true,
     lib: {
       entry: fileURLToPath(new URL('./lib/index.ts', import.meta.url)),
