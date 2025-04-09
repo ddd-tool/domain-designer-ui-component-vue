@@ -41,7 +41,7 @@ function startWorkflowAnimation(animationTask: number, nodes: readonly string[])
   for (let i = 0; i < nodes.length; i++) {
     const el = document.querySelector(`[data-name="${nodes[i]}"]`) as SVGGElement
     setTimeout(() => {
-      if (animationTask !== currentAnimationTask) return
+      if (animationTask !== currentAnimationTask || !el) return
       el.style.transition = `opacity 0s`
       el.style.opacity = '0.0'
       setTimeout(() => {
@@ -60,13 +60,12 @@ diagramAgg.events.onFocusFlow.watchPublish(({ data }) => {
   const idMap = diagramAgg.commands.getIdMap()
   let items: readonly string[] = data.workflow === undefined ? [] : diagramAgg.states.workflows.value[data.workflow]
   items = items.filter((i) => {
-    let b = true
     if (!data.displayReadModel && idMap[i]._attributes.rule === 'ReadModel') {
-      b = false
+      return false
     } else if (!data.displaySystem && idMap[i]._attributes.rule === 'System') {
-      b = false
+      return false
     }
-    return b
+    return true
   })
   if (!data.displayReadModel || !data.displaySystem) {
     items = removeAdjacentDuplicates(items)

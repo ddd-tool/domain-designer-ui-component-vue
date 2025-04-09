@@ -1,7 +1,9 @@
 import { DomainDesigner, isDomainDesigner } from '@ddd-tool/domain-designer-core'
 
+const __d1 = (await import('./design-self')).default
 const __d2 = (await import('./design-zh')).default
 const __d3 = (await import('./design-en')).default
+
 // 'design-en': (await import('./design-en')).default,
 // 'design-en2': (await import('./design-en')).default,
 // 'design-en3': (await import('./design-en')).default,
@@ -44,6 +46,9 @@ const __d3 = (await import('./design-en')).default
 
 const data: Record<string, DomainDesigner> = {}
 
+if (isDomainDesigner(__d1)) {
+  data['design-self'] = __d1
+}
 if (isDomainDesigner(__d2)) {
   data['design-zh'] = __d2
 }

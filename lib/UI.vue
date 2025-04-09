@@ -202,12 +202,15 @@ const dockItems = ref([
     },
   },
 ])
-watch([currentStory, currentWorkflow], ([story, workflow]) => {
-  if (workflow === undefined) {
-    diagramAgg.commands.focusFlow(undefined)
-    return
+
+watch(currentStory, (story) => {
+  if (story !== EMPTY_STORY) {
+    currentWorkflow.value = diagramAgg.states.design.value?._getContext().getUserStories()[story][0]
   }
-  diagramAgg.commands.focusFlow(workflow!, story)
+  diagramAgg.commands.focusFlow(currentWorkflow.value!, story)
+})
+watch(currentWorkflow, (workflow) => {
+  diagramAgg.commands.focusFlow(workflow!, currentStory.value)
 })
 function handleNoFocus() {
   currentStory.value = EMPTY_STORY

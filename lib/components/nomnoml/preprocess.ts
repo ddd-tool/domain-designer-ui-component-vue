@@ -8,7 +8,7 @@ export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domS
     return document.createElement('svg')
   }
   const svgDoc = parser.parseFromString(domStr, 'image/svg+xml')
-  const context = diagramAgg.states.design.value?._getContext()!
+  const context = diagramAgg.commands.filterContext()
   for (const node of Object.values(context.getIdMap())) {
     if (!isNodeLike(node)) {
       continue
@@ -58,7 +58,10 @@ export function preprocessSvg(diagramAgg: ReturnType<typeof useDiagramAgg>, domS
       index++
       const info = node.inner[key]
       const infoId = info._attributes.__id
-      const infoDoc = nodeDoc.querySelector(`[data-compartment="${index}"]`)! as HTMLElement
+      const infoDoc = nodeDoc.querySelector(`[data-compartment="${index}"]`) as HTMLElement
+      if (!infoDoc) {
+        continue
+      }
       infoDoc.dataset.id = infoId
       {
         const text = infoDoc.querySelector('text')!

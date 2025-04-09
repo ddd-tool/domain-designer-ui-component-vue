@@ -1,14 +1,15 @@
 import { computed, ref } from 'vue'
 import { createBroadcastEvent, createSingletonAgg } from 'vue-fn/domain'
 import type { DomainDesigner } from '@ddd-tool/domain-designer-core'
-import { nomnomlCodeGenerator } from './gen-code'
+import { filterContext, nomnomlCodeGenerator } from './gen-code'
+import { EMPTY_STORY } from './define'
+export { EMPTY_STORY } from './define'
 
 let agg: ReturnType<typeof createAgg>
 interface FocusFlowFn {
   (workflow: undefined, userStory?: string): void
   (workflow: string, userStory: string): void
 }
-export const EMPTY_STORY = '__Empty__'
 
 function createAgg(data: Record<string, DomainDesigner>) {
   return createSingletonAgg(() => {
@@ -32,11 +33,17 @@ function createAgg(data: Record<string, DomainDesigner>) {
     const displaySystem = ref(true)
     const code = computed(() => {
       console.debug('generate nomnoml code')
+      console.debug('current story', currentStory.value)
       if (!design.value) {
         return ''
       }
       const code: string[] = []
-      const generator = nomnomlCodeGenerator(design.value, displayReadModel.value, displaySystem.value)
+      const generator = nomnomlCodeGenerator({
+        design: design.value,
+        currentStory: currentStory.value,
+        displayReadModel: displayReadModel.value,
+        displaySystem: displaySystem.value,
+      })
       let item = generator.next()
       while (!item.done) {
         code.push(item.value)
@@ -82,12 +89,19 @@ function createAgg(data: Record<string, DomainDesigner>) {
 
     function focusFlow(workflow: undefined): void
     function focusFlow(workflow: string, userStory: string): void
-    function focusFlow(workflow: string | undefined, userStory: string = 'Others') {
-      currentWorkflow.value = workflow
+    function focusFlow(workflow: string | undefined, userStory: string = EMPTY_STORY) {
       currentStory.value = userStory
+      if (
+        userStory !== EMPTY_STORY &&
+        (!workflow || !design.value?._getContext().getUserStories()[userStory].includes(workflow))
+      ) {
+        currentWorkflow.value = design.value?._getContext().getUserStories()[userStory][0] || undefined
+      } else {
+        currentWorkflow.value = workflow
+      }
       onFocusFlow.publish({
         userStory,
-        workflow,
+        workflow: currentWorkflow.value,
         displayReadModel: displayReadModel.value,
         displaySystem: displaySystem.value,
       })
@@ -123,6 +137,14 @@ function createAgg(data: Record<string, DomainDesigner>) {
         focusFlow: focusFlow as FocusFlowFn,
         downloadSvg() {
           onDownloadSvg.publish({})
+        },
+        filterContext() {
+          return filterContext({
+            design: design.value!,
+            currentStory: currentStory.value,
+            displayReadModel: displayReadModel.value,
+            displaySystem: displaySystem.value,
+          })
         },
         setDownloadEnabled(b: boolean) {
           downloadEnabled.value = b
