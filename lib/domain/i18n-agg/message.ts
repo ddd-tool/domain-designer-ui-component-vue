@@ -15,8 +15,8 @@ export type I18nMessageKeys =
   | 'menu.focusOnUserStory.animationDuration'
   | 'menu.completenessAssist'
   | 'menu.settings'
-  | 'menu.settings.renderExternalSystem'
-  | 'menu.settings.renderReadModel'
+  | 'menu.settings.linkExternalSystem'
+  | 'menu.settings.linkReadModel'
   | 'menu.settings.language'
   | 'menu.settings.dataSource'
   | 'menu.help'
@@ -25,6 +25,7 @@ export type I18nMessageKeys =
   | 'menu.help.drag'
   | 'menu.help.drag.content'
   | 'menu.exportSvg'
+  | 'menu.resetPosition'
 
 export type I18nMessages = {
   [key in I18nMessageKeys]: string

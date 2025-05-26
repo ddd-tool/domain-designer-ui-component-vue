@@ -17,8 +17,8 @@ const messages: I18nMessages = {
   'menu.focusOnUserStory.animationDuration': '动画间隔',
   'menu.completenessAssist': '完备性辅助',
   'menu.settings': '设置',
-  'menu.settings.renderExternalSystem': '渲染外部系统',
-  'menu.settings.renderReadModel': '渲染读模型',
+  'menu.settings.linkExternalSystem': '连接外部系统',
+  'menu.settings.linkReadModel': '连接读模型',
   'menu.settings.language': '语言',
   'menu.settings.dataSource': '数据源',
   'menu.help': '帮助',
@@ -27,6 +27,7 @@ const messages: I18nMessages = {
   'menu.help.drag': '拖动画布：',
   'menu.help.drag.content': '按下鼠标中键 或者 按住空格+鼠标左键',
   'menu.exportSvg': '导出SVG',
+  'menu.resetPosition': '视图复位',
 }
 
 export default messages

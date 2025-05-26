@@ -85,6 +85,16 @@ function computeZoom(e: WheelEvent, oldScale: number, zoomSpeed: number) {
   }
 }
 
+// 复位函数
+function resetPosition() {
+  position.value.x = 0
+  position.value.y = 0
+}
+
+defineExpose({
+  resetPosition,
+})
+
 // 鼠标滚轮事件（缩放功能，基于鼠标中心缩放）
 const onWheel = (e: WheelEvent) => {
   e.preventDefault() // 阻止页面默认滚动行为

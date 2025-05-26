@@ -125,4 +125,9 @@ const 商家下架商品流程 = d.startWorkflow('商家下架商品流程')
 
 d.defineUserStory('卖家对商品进行上架、下架操作', [商家上架商品流程, 商家下架商品流程])
 
+const 外部系统触发下单失败流程 = d.startWorkflow('外部系统触发下单失败流程')
+物流系统.event(下单失败).readModel(订单详情)
+
+d.defineUserStory('外部系统调用', [外部系统触发下单失败流程])
+
 export default d

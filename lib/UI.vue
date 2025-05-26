@@ -34,6 +34,8 @@ const i18nAgg = useI18nAgg()
 const t = i18nAgg.commands.$t
 const diagramAgg = useDiagramAgg(props.designs)
 
+const dragZoomRef = ref<InstanceType<typeof DragZoom>>()
+
 // =========================== Focus Node ===========================
 let focusInfoTask = '0'
 const nodeDetailCollapsed = ref(diagramAgg.states.currentNode.value === undefined)
@@ -102,12 +104,12 @@ const workflowPlayInterval = ref(diagramAgg.states.workflowPlayInterval.value)
 watch(workflowPlayInterval, (v) => {
   diagramAgg.commands.setWorkflowPlayInterval(v)
 })
-const displayReadModel = ref(diagramAgg.states.displayReadModel.value)
-watch(displayReadModel, (v) => {
+const linkReadModel = ref(diagramAgg.states.linkReadModel.value)
+watch(linkReadModel, (v) => {
   diagramAgg.commands.setDisplayReadModel(v)
 })
-const displaySystem = ref(diagramAgg.states.displayReadModel.value)
-watch(displaySystem, (v) => {
+const linkSystem = ref(diagramAgg.states.linkSystem.value)
+watch(linkSystem, (v) => {
   diagramAgg.commands.setDisplaySystem(v)
 })
 const language = ref(i18nAgg.states.currentLanguage.value)
@@ -185,20 +187,27 @@ const dockItems = ref([
     },
   },
   {
+    label: t('menu.exportSvg'),
+    icon: 'pi pi-file-export',
+    command() {
+      diagramAgg.commands.downloadSvg()
+    },
+  },
+  {
+    label: t('menu.resetPosition'),
+    icon: 'pi pi-sync',
+    severity: 'success',
+    disabled: computed(() => !diagramAgg.states.downloadEnabled.value),
+    command() {
+      dragZoomRef.value?.resetPosition()
+    },
+  },
+  {
     label: t('menu.help'),
     icon: 'pi pi-question-circle',
     severity: 'help',
     command(e: any) {
       toggle(e)
-    },
-  },
-  {
-    label: t('menu.exportSvg'),
-    icon: 'pi pi-file-export',
-    severity: 'success',
-    disabled: computed(() => !diagramAgg.states.downloadEnabled.value),
-    command() {
-      diagramAgg.commands.downloadSvg()
     },
   },
 ])
@@ -290,12 +299,12 @@ function handleNoFocus() {
     class="toolbar-drawer"
   >
     <div>
-      <ToggleSwitch v-model="displayReadModel" :true-value="true" :false-value="false" />
-      <label> {{ t('menu.settings.renderReadModel') }} </label>
+      <ToggleSwitch v-model="linkReadModel" :true-value="true" :false-value="false" />
+      <label> {{ t('menu.settings.linkReadModel') }} </label>
     </div>
     <div>
-      <ToggleSwitch v-model="displaySystem" :true-value="true" :false-value="false" />
-      <label> {{ t('menu.settings.renderExternalSystem') }} </label>
+      <ToggleSwitch v-model="linkSystem" :true-value="true" :false-value="false" />
+      <label> {{ t('menu.settings.linkExternalSystem') }} </label>
     </div>
     <Divider></Divider>
     <div>
@@ -316,7 +325,7 @@ function handleNoFocus() {
       </div>
     </div>
   </Drawer>
-  <DragZoom style="width: 100vw; height: 100vh">
+  <DragZoom ref="dragZoomRef" style="width: 100vw; height: 100vh">
     <Nomnoml />
   </DragZoom>
   <Fieldset

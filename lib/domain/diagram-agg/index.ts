@@ -29,8 +29,8 @@ function createAgg(data: Record<string, DomainDesigner>) {
     })
 
     // ======================== generating code ========================
-    const displayReadModel = ref(true)
-    const displaySystem = ref(true)
+    const linkReadModel = ref(true)
+    const linkSystem = ref(true)
     const code = computed(() => {
       console.debug('generate nomnoml code')
       console.debug('current story', currentStory.value)
@@ -41,8 +41,8 @@ function createAgg(data: Record<string, DomainDesigner>) {
       const generator = nomnomlCodeGenerator({
         design: design.value,
         currentStory: currentStory.value,
-        displayReadModel: displayReadModel.value,
-        displaySystem: displaySystem.value,
+        displayReadModel: linkReadModel.value,
+        displaySystem: linkSystem.value,
       })
       let item = generator.next()
       while (!item.done) {
@@ -83,8 +83,8 @@ function createAgg(data: Record<string, DomainDesigner>) {
     const onFocusFlow = createBroadcastEvent({
       userStory: '' as string,
       workflow: '' as string | undefined,
-      displayReadModel,
-      displaySystem,
+      displayReadModel: linkReadModel,
+      displaySystem: linkSystem,
     })
 
     function focusFlow(workflow: undefined): void
@@ -102,8 +102,8 @@ function createAgg(data: Record<string, DomainDesigner>) {
       onFocusFlow.publish({
         userStory,
         workflow: currentWorkflow.value,
-        displayReadModel: displayReadModel.value,
-        displaySystem: displaySystem.value,
+        displayReadModel: linkReadModel.value,
+        displaySystem: linkSystem.value,
       })
     }
 
@@ -130,8 +130,8 @@ function createAgg(data: Record<string, DomainDesigner>) {
         currentDesignKey,
         currentNode,
         downloadEnabled,
-        displayReadModel,
-        displaySystem,
+        linkReadModel,
+        linkSystem,
       },
       commands: {
         focusFlow: focusFlow as FocusFlowFn,
@@ -142,8 +142,8 @@ function createAgg(data: Record<string, DomainDesigner>) {
           return filterContext({
             design: design.value!,
             currentStory: currentStory.value,
-            displayReadModel: displayReadModel.value,
-            displaySystem: displaySystem.value,
+            displayReadModel: linkReadModel.value,
+            displaySystem: linkSystem.value,
           })
         },
         setDownloadEnabled(b: boolean) {
@@ -155,10 +155,10 @@ function createAgg(data: Record<string, DomainDesigner>) {
           }
         },
         setDisplayReadModel(b: boolean) {
-          displayReadModel.value = b
+          linkReadModel.value = b
         },
         setDisplaySystem(b: boolean) {
-          displaySystem.value = b
+          linkSystem.value = b
         },
         setCurrentNode(id: string | undefined) {
           currentNode.value = id

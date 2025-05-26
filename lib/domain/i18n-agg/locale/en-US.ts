@@ -17,8 +17,8 @@ const messages: I18nMessages = {
   'menu.focusOnUserStory.animationDuration': 'Animation Duration',
   'menu.completenessAssist': 'Completeness Assist',
   'menu.settings': 'Settings',
-  'menu.settings.renderExternalSystem': 'Render `System`',
-  'menu.settings.renderReadModel': 'Render `Read Model`',
+  'menu.settings.linkExternalSystem': 'Link `System`',
+  'menu.settings.linkReadModel': 'Link `Read Model`',
   'menu.settings.language': 'Language',
   'menu.settings.dataSource': 'Data Source',
   'menu.help': 'Help',
@@ -27,6 +27,7 @@ const messages: I18nMessages = {
   'menu.help.drag': 'Drag:',
   'menu.help.drag.content': 'Press middle mouse button or press space + left mouse button',
   'menu.exportSvg': 'Export SVG',
+  'menu.resetPosition': 'Reset Position',
 }
 
 export default messages
