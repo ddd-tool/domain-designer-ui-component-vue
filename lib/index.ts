@@ -4,4 +4,6 @@ import Tooltip from 'primevue/tooltip'
 
 import Ui from './UI.vue'
 
+import './domain/mount-plugin'
+
 export { Ui, PrimeVue, Aura, Tooltip }

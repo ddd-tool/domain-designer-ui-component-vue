@@ -1,12 +1,12 @@
 import { computed, reactive, ref } from 'vue'
-import { createBroadcastEvent, createSingletonAgg } from 'vue-fn/domain'
+import { createBroadcastEvent, createPluginHelperByAggCreator, createSingletonAgg } from 'vue-fn/domain'
 import type { DomainDesigner } from '@ddd-tool/domain-designer-core'
 import { filterContext, nomnomlCodeGenerator } from './gen-code'
 import { defaultRenderConfig, EMPTY_STORY, type EdgeType, type Ranker } from './define'
 export { EMPTY_STORY }
 
 let agg: ReturnType<typeof createAgg>
-interface FocusFlowFn {
+type FocusFlowFn = {
   (workflow: undefined, userStory?: string): void
   (workflow: string, userStory: string): void
 }
@@ -200,12 +200,15 @@ function createAgg(data: Record<string, DomainDesigner>) {
   })
 }
 
+export const DiagramPluginHelper = createPluginHelperByAggCreator(createAgg)
+
 export function useDiagramAgg(data?: Record<string, DomainDesigner>) {
   if (!agg) {
     if (!data) {
       throw new Error('need data')
     }
     agg = createAgg(data)
+    DiagramPluginHelper.registerAgg(agg)
   }
   return agg.api
 }

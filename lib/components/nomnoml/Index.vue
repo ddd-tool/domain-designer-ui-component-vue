@@ -10,46 +10,6 @@ const diagramAgg = useDiagramAgg()
 const svgDom = computed(() => {
   const baseStyle = getStyle(diagramAgg.states.renderConfig)
   const code = baseStyle + diagramAgg.states.code.value
-  //   const code = `
-  // #.command: visual=class fill=#aec6cf title=bold
-  // #.facadeCommand: visual=class fill=#779fae title=bold
-  // #.readModel: visual=class fill=#77dd77 title=bold
-  // #.aggregation: visual=class fill=#fdfd9d title=bold
-  // #.service: fill=#eee8d5 title=bold
-  // #.system: fill=#eee8d5 title=bold
-  // #.event: visual=class fill=#ffcb81 title=bold
-  // #.policy: fill=#b6a2db title=bold
-  // // #.actor: padding=10
-
-  // #padding: 4
-  // #spacing: 40
-  // #edgeMargin: 0
-  // #lineWidth: 2.5
-  // #leading: 1.35
-  // #zoom: 1
-  // #font: Times New Roman //consolas,Monaco
-  // #fontSize: 14
-  // #ranker: network-simplex
-  // #edges: rounded
-  // #bendSize: 1
-
-  // [<start>start] -> [<state>plunder] -> [<choice>more loot] -> [start]
-  // [more loot] no ->[<end>e]
-
-  // [Pirate|
-  //   [beard]--[parrot]
-  //   [beard]-:>[foul mouth]
-  // ]
-
-  // [<table>mischief| bawl | sing || yell | drink ]
-
-  // [<abstract>Marauder]<:--[Pirate]
-  // [Pirate] - 0..7[mischief]
-  // [<actor id=sailor>Jolly;Sailor]
-  // [sailor]->[Pirate]
-  // [sailor]->[rum]
-  // [Pirate]-> *[rum|tastiness: Int|swig()]`
-  console.debug('code', code)
   return preprocessSvg(diagramAgg, nomnoml.renderSvg(code))
 })
 const svgContainerRef = ref<HTMLDivElement>()
