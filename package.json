@@ -17,6 +17,7 @@
   "dependencies": {
     "@ddd-tool/domain-designer-core": "0.1.0-beta.10",
     "@primeuix/themes": "^1.1.1",
+    "graphre": "^0.1.3",
     "nomnoml": "^1.7.0",
     "primeicons": "^7.0.0",
     "primevue": "^4.3.4",

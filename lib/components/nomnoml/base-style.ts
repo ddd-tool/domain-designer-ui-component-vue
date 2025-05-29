@@ -1,4 +1,7 @@
-export default `
+import type { RenderConfig } from '#lib/domain/diagram-agg/define'
+
+export default function (config: RenderConfig) {
+  return `
 #.command: visual=class fill=#aec6cf title=bold
 #.facadeCommand: visual=class fill=#779fae title=bold
 #.readModel: visual=class fill=#77dd77 title=bold
@@ -9,14 +12,17 @@ export default `
 #.policy: fill=#b6a2db title=bold
 // #.actor: padding=10
 
-//#bendSize: 0.3
-#padding: 4
-//#spacing: 40
+#padding: ${config.padding}
+#spacing: 40
 #edgeMargin: 0
 #lineWidth: 2.5
 #leading: 1.35
-//#zoom: 1
+#zoom: 1
 #font: Times New Roman //consolas,Monaco
-#fontSize: 14
+#fontSize: ${config.fontSize}
+#ranker: ${config.ranker}
+#edges: ${config.edges}
+#bendSize: ${config.bendSize}
 
 `
+}

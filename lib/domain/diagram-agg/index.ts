@@ -1,9 +1,9 @@
-import { computed, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { createBroadcastEvent, createSingletonAgg } from 'vue-fn/domain'
 import type { DomainDesigner } from '@ddd-tool/domain-designer-core'
 import { filterContext, nomnomlCodeGenerator } from './gen-code'
-import { EMPTY_STORY } from './define'
-export { EMPTY_STORY } from './define'
+import { defaultRenderConfig, EMPTY_STORY, type EdgeType, type Ranker } from './define'
+export { EMPTY_STORY }
 
 let agg: ReturnType<typeof createAgg>
 interface FocusFlowFn {
@@ -27,6 +27,8 @@ function createAgg(data: Record<string, DomainDesigner>) {
       }
       return Object.keys(designRecords.value)
     })
+
+    const renderConfig = reactive(defaultRenderConfig())
 
     // ======================== generating code ========================
     const linkReadModel = ref(true)
@@ -119,6 +121,7 @@ function createAgg(data: Record<string, DomainDesigner>) {
 
     return {
       states: {
+        renderConfig,
         design,
         designKeys,
         code,
@@ -145,6 +148,24 @@ function createAgg(data: Record<string, DomainDesigner>) {
             displayReadModel: linkReadModel.value,
             displaySystem: linkSystem.value,
           })
+        },
+        setRenderRanker(v: Ranker) {
+          renderConfig.ranker = v
+        },
+        setRenderPadding(v: number) {
+          if (v < 0) {
+            throw new Error('RenderPadding must >= 0')
+          }
+          renderConfig.padding = v
+        },
+        setRenderFontSize(v: number) {
+          renderConfig.fontSize = v
+        },
+        setRenderBendSize(v: number) {
+          renderConfig.bendSize = v
+        },
+        setRenderEdgesType(v: EdgeType) {
+          renderConfig.edges = v
         },
         setDownloadEnabled(b: boolean) {
           downloadEnabled.value = b

@@ -16,12 +16,13 @@ import Dock from 'primevue/dock'
 import Fieldset from 'primevue/fieldset'
 import Popover from 'primevue/popover'
 import Slider from 'primevue/slider'
-import { computed, ref, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useI18nAgg } from './domain/i18n-agg'
 import { type DomainDesigner } from '@ddd-tool/domain-designer-core'
 import { checkDomainDesigner, checkStory, checkWorkflow } from '@ddd-tool/domain-designer-core/check'
 import { parseNode } from './ui'
 import type { NodeLike } from './domain/common'
+import { VALID_RANKERS, VALID_EDGE_TYPES } from './domain/diagram-agg/define'
 
 export type NonEmptyObject<T extends object> = keyof T extends never ? never : T
 interface Props {
@@ -113,12 +114,59 @@ watch(linkSystem, (v) => {
   diagramAgg.commands.setDisplaySystem(v)
 })
 const language = ref(i18nAgg.states.currentLanguage.value)
-const languageOptions = ref([
+const languageOptions = reactive([
   { label: '简体中文', value: 'zh-CN' },
   { label: 'English', value: 'en-US' },
 ])
 watch(language, (v) => {
   i18nAgg.commands.setLanguage(v)
+})
+const renderRanker = ref(diagramAgg.states.renderConfig.ranker)
+const renderRankerOptions = reactive([
+  {
+    label: VALID_RANKERS.NetworkSimplex,
+    value: VALID_RANKERS.NetworkSimplex,
+    note: t('menu.settings.render.ranker.NetworkSimplex.note'),
+  },
+  {
+    label: VALID_RANKERS.TightTree,
+    value: VALID_RANKERS.TightTree,
+    note: t('menu.settings.render.ranker.TightTree.note'),
+  },
+  {
+    label: VALID_RANKERS.LongestPath,
+    value: VALID_RANKERS.LongestPath,
+    note: t('menu.settings.render.ranker.LongestPath.note'),
+  },
+])
+watch(renderRanker, (v) => {
+  diagramAgg.commands.setRenderRanker(v)
+})
+const renderPadding = ref(diagramAgg.states.renderConfig.padding)
+watch(renderPadding, (v) => {
+  diagramAgg.commands.setRenderPadding(v)
+})
+const renderFontSize = ref(diagramAgg.states.renderConfig.fontSize)
+watch(renderFontSize, (v) => {
+  diagramAgg.commands.setRenderFontSize(v)
+})
+const renderEdgesType = ref(diagramAgg.states.renderConfig.edges)
+const renderEdgesTypeOptions = reactive([
+  {
+    label: t('menu.settings.render.edgesType.hard'),
+    value: VALID_EDGE_TYPES.Hard,
+  },
+  {
+    label: t('menu.settings.render.edgesType.rounded'),
+    value: VALID_EDGE_TYPES.Rounded,
+  },
+])
+watch(renderEdgesType, (v) => {
+  diagramAgg.commands.setRenderEdgesType(v)
+})
+const renderBendSize = ref(diagramAgg.states.renderConfig.bendSize)
+watch(renderBendSize, (v) => {
+  diagramAgg.commands.setRenderBendSize(v)
 })
 const currentDesignKey = ref(diagramAgg.states.currentDesignKey.value!)
 watch(currentDesignKey, (v) => {
@@ -308,7 +356,7 @@ function handleNoFocus() {
     </div>
     <Divider></Divider>
     <div>
-      <label> {{ t('menu.settings.language') }} </label>
+      <h3>{{ t('menu.settings.language') }}</h3>
       <SelectButton
         v-model="language"
         :options="languageOptions"
@@ -317,8 +365,45 @@ function handleNoFocus() {
       ></SelectButton>
     </div>
     <Divider></Divider>
+    <div>
+      <h3>{{ t('menu.settings.render') }}</h3>
+      <h4>{{ t('menu.settings.render.ranker') }}</h4>
+      <SelectButton v-model="renderRanker" :options="renderRankerOptions" option-label="label" option-value="value">
+        <template #option="slotProps">
+          <div v-tooltip.top="{ value: slotProps.option.note }">{{ slotProps.option.label }}</div>
+        </template>
+      </SelectButton>
+    </div>
+    <div>
+      <h4>{{ t('menu.settings.render.padding') }}: {{ renderPadding }}</h4>
+      <div>
+        <Slider v-model="renderPadding" :step="0.5" :min="0.5" :max="10"></Slider>
+      </div>
+    </div>
+    <div>
+      <h4>{{ t('menu.settings.render.fontSize') }}: {{ renderFontSize }}</h4>
+      <div>
+        <Slider v-model="renderFontSize" :step="2" :min="10" :max="32"></Slider>
+      </div>
+    </div>
+    <div>
+      <h4>{{ t('menu.settings.render.edgesType') }}</h4>
+      <SelectButton
+        v-model="renderEdgesType"
+        :options="renderEdgesTypeOptions"
+        option-label="label"
+        option-value="value"
+      ></SelectButton>
+    </div>
+    <div v-show="renderEdgesType === VALID_EDGE_TYPES.Rounded">
+      <h4>{{ t('menu.settings.render.bendSize') }}: {{ renderBendSize }}</h4>
+      <div>
+        <Slider v-model="renderBendSize" :step="0.1" :min="0.1" :max="0.6"></Slider>
+      </div>
+    </div>
+    <Divider></Divider>
     <div class="datasource">
-      <h3>{{ t('menu.settings.dataSource') }}</h3>
+      <h4>{{ t('menu.settings.dataSource') }}</h4>
       <div v-for="(item, index) in designKeyOptions" :key="index" class="datasource-item">
         <RadioButton v-model="currentDesignKey" :input-id="item.value" :value="item.value"></RadioButton>
         <label :for="item.value"> {{ item.label }} </label>
