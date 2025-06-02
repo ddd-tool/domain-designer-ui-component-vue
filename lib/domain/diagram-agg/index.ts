@@ -43,8 +43,8 @@ function createAgg(data: Record<string, DomainDesigner>) {
       const generator = nomnomlCodeGenerator({
         design: design.value,
         currentStory: currentStory.value,
-        displayReadModel: linkReadModel.value,
-        displaySystem: linkSystem.value,
+        linkReadModel: linkReadModel.value,
+        linkSystem: linkSystem.value,
       })
       let item = generator.next()
       while (!item.done) {

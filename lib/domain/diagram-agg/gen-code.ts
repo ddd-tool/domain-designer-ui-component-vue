@@ -10,13 +10,13 @@ import { EMPTY_STORY } from './define'
 export function* nomnomlCodeGenerator<T extends DomainDesigner>(params: {
   design: T
   currentStory: string
-  displayReadModel: boolean
-  displaySystem: boolean
+  linkReadModel: boolean
+  linkSystem: boolean
 }) {
   const design = params.design
   const currentStory = params.currentStory
-  const displayReadModel = params.displayReadModel
-  const displaySystem = params.displaySystem
+  const displayReadModel = params.linkReadModel
+  const displaySystem = params.linkSystem
   const context = filterContext({
     design,
     currentStory,
@@ -80,10 +80,10 @@ export function* nomnomlCodeGenerator<T extends DomainDesigner>(params: {
   for (const i in context.links) {
     const linkType = context.links[i]
     const [_rule1, from, _rule2, to] = i.split(',')
-    if (!params.displayReadModel && (_rule1 === 'ReadModel' || _rule2 === 'ReadModel')) {
+    if (!params.linkReadModel && (_rule1 === 'ReadModel' || _rule2 === 'ReadModel')) {
       continue
     }
-    if (!params.displaySystem && (_rule1 === 'System' || _rule2 === 'System')) {
+    if (!params.linkSystem && (_rule1 === 'System' || _rule2 === 'System')) {
       continue
     }
     if (linkType === 'Association') {

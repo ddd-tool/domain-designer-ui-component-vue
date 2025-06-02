@@ -245,7 +245,6 @@ const dockItems = ref([
     label: t('menu.resetPosition'),
     icon: 'pi pi-sync',
     severity: 'success',
-    disabled: computed(() => !diagramAgg.states.downloadEnabled.value),
     command() {
       dragZoomRef.value?.resetPosition()
     },
