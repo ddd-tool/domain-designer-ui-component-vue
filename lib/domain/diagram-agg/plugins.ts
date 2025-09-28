@@ -7,7 +7,8 @@ export const DIAGRAM_STORAGE_PLUGIN = DiagramPluginHelper.createSetupPlugin(() =
     mount({ api }) {
       console.debug('加载diagram存储插件')
       const defRenderConfig = defaultRenderConfig()
-      const existRenderConfig = localStorage.getItem('diagram-render-config')
+      const RENDER_CONFIG_KEY = 'diagram-render-config'
+      const existRenderConfig = localStorage.getItem(RENDER_CONFIG_KEY)
       if (existRenderConfig) {
         const { ranker, padding, fontSize, edges, bendSize } = JSON.parse(existRenderConfig) as RenderConfig
         api.commands.setRenderBendSize(bendSize || defRenderConfig.bendSize)
@@ -17,7 +18,18 @@ export const DIAGRAM_STORAGE_PLUGIN = DiagramPluginHelper.createSetupPlugin(() =
         api.commands.setRenderRanker(ranker || defRenderConfig.ranker)
       }
       watch(api.states.renderConfig, () => {
-        localStorage.setItem('diagram-render-config', JSON.stringify(api.states.renderConfig))
+        localStorage.setItem(RENDER_CONFIG_KEY, JSON.stringify(api.states.renderConfig))
+      })
+
+      const DESIGN_KEY = 'diagram-current-design'
+      const existDesignKey = localStorage.getItem(DESIGN_KEY)
+      if (existDesignKey && api.states.designRecords.value[existDesignKey]) {
+        api.commands.switchDesign(existDesignKey)
+      }
+      watch(api.states.currentDesignKey, (value) => {
+        if (value) {
+          localStorage.setItem(DESIGN_KEY, value)
+        }
       })
     },
   }

@@ -124,6 +124,7 @@ function createAgg(data: Record<string, DomainDesigner>) {
         renderConfig,
         design,
         designKeys,
+        designRecords,
         code,
         userStories,
         workflows,
