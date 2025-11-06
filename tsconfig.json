@@ -24,6 +24,7 @@
     "module": "ESNext",
     "target": "ESNext",
     "esModuleInterop": true,
+    "noUncheckedIndexedAccess": true,
     "sourceMap": true,
     "types": [
       "node",
